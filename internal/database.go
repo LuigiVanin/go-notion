@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"gorm.io/driver/postgres"
@@ -17,7 +17,7 @@ type User struct {
 
 func createConnection(url string) (*gorm.DB, error)  {
 	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
-	if err == nil {
+	if err != nil {
 		Database = db
 	}
 	return db, err

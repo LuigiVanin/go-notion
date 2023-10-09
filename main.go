@@ -9,14 +9,15 @@ import (
 
 
 func firstPost(ctx *fiber.Ctx) error  {
+	db := Database
 	user := User{
 		Email: "luisfvanin@gmail.com",
 		Password: "123456",
 		Name: "Luis",
 	}
-	Database.Create(&user)
-
-	return ctx.SendString("Hello, World!!!")
+	db.Create(&user)
+	
+	return ctx.SendString("User Criado!!!")
 }
 
 func main() {
@@ -33,11 +34,13 @@ func main() {
 
 	fmt.Println("URL DO BANCO", url)
 
-	db, err	:=createConnection(url)
+	db, err	:= createConnection(url)
+	fmt.Println(Database)
 	
 	if err != nil {
 		fmt.Println(db)
 		log.Fatal("Error connecting to database")
+		return
 	}
 
 	migrationErr := migrate(db)
@@ -50,6 +53,8 @@ func main() {
 		return c.SendString("Hello, World!!!")
 	})
 	app.Post("/user", firstPost)
-	app.Listen(fmt.Sprint(":%d", env.Port))
+	log.Fatal(
+		app.Listen(fmt.Sprintf(":%d", env.Port)),
+	)
 
 }
