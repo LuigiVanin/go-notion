@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"errors"
@@ -12,7 +12,7 @@ type EnvData struct  {
 	Port int
 }
 
-func loadEnvData() (EnvData, error) {
+func LoadEnvData() (EnvData, error) {
 	env, err := godotenv.Read();
 	
 	if (err != nil) {

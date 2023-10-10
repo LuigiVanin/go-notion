@@ -5,25 +5,17 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+
+	config "main/config"
+	controllers "main/controllers"
+	"main/middleware"
 )
 
-
-func firstPost(ctx *fiber.Ctx) error  {
-	db := Database
-	user := User{
-		Email: "luisfvanin@gmail.com",
-		Password: "123456",
-		Name: "Luis",
-	}
-	db.Create(&user)
-	
-	return ctx.SendString("User Criado!!!")
-}
 
 func main() {
 	fmt.Println("Hello, World!")
 
-	env, err := loadEnvData()
+	env, err := config.LoadEnvData()
 
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -32,10 +24,9 @@ func main() {
 
 	url := env.DatabaseURL
 
-	fmt.Println("URL DO BANCO", url)
+	db, err	:= config.CreateConnection(url)
 
-	db, err	:= createConnection(url)
-	fmt.Println(Database)
+	fmt.Println("DATABASE: ", config.Database)
 	
 	if err != nil {
 		fmt.Println(db)
@@ -43,16 +34,19 @@ func main() {
 		return
 	}
 
-	migrationErr := migrate(db)
+	migrationErr := config.Migrate(db)
 
 	if migrationErr != nil {
 		fmt.Println("Error migrating database")
 	}
 	app:= fiber.New()
+	app.Use(middleware.Json)
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!!!")
 	})
-	app.Post("/user", firstPost)
+	app.Post("/user", controllers.CreateUser)
+	app.Get("/user", controllers.GetCurrentUser)
+
 	log.Fatal(
 		app.Listen(fmt.Sprintf(":%d", env.Port)),
 	)
