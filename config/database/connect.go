@@ -1,13 +1,11 @@
-package config
+package database
 
 import (
-	models "main/models"
+	"main/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
-
-var Database *gorm.DB
 
 func CreateConnection(url string) (*gorm.DB, error)  {
 	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
@@ -22,7 +20,10 @@ func Migrate(db *gorm.DB) error {
 	return err
 }
 
-func ConnectDB(url string) {
+func ConnectDB(url string) error {
 	CreateConnection(url)
 	Migrate(Database)
+
+
+	return nil
 }

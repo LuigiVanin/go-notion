@@ -3,18 +3,14 @@ package main
 import (
 	"fmt"
 	"log"
-
-	"github.com/gofiber/fiber/v2"
-
+	"main/app"
 	config "main/config"
-	controllers "main/controllers"
-	"main/middleware"
+	conn "main/config/database"
 )
 
 
-func main() {
-	fmt.Println("Hello, World!")
 
+func main() {
 	env, err := config.LoadEnvData()
 
 	if err != nil {
@@ -24,9 +20,9 @@ func main() {
 
 	url := env.DatabaseURL
 
-	db, err	:= config.CreateConnection(url)
+	db, err	:= conn.CreateConnection(url)
 
-	fmt.Println("DATABASE: ", config.Database)
+	fmt.Println("DATABASE: ", conn.Database)
 	
 	if err != nil {
 		fmt.Println(db)
@@ -34,21 +30,10 @@ func main() {
 		return
 	}
 
-	migrationErr := config.Migrate(db)
+	// migrationErr := config.Migrate(db)
 
-	if migrationErr != nil {
-		fmt.Println("Error migrating database")
-	}
-	app:= fiber.New()
-	app.Use(middleware.Json)
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!!!")
-	})
-	app.Post("/user", controllers.CreateUser)
-	app.Get("/user", controllers.GetCurrentUser)
-
-	log.Fatal(
-		app.Listen(fmt.Sprintf(":%d", env.Port)),
-	)
-
+	// if migrationErr != nil {
+	// 	fmt.Println("Error migrating database")
+	// }
+	app.Run(&env)
 }
