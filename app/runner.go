@@ -10,8 +10,8 @@ import (
 )
 
 func Run(env *config.EnvData) {
-	app:= fiber.New()
-	
+	app := fiber.New()
+
 	router.Setup(app)
 
 	fmt.Println("\nRoutes:")

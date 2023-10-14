@@ -12,7 +12,7 @@ func addAuthRoutes(router *fiber.App) {
 	auth := router.Group("/auth")
 
 	auth.Post(
-		"/signup", 
+		"/signup",
 		middleware.JsonValidatorHandler[dto.SignupUser](),
 		controllers.Signup,
 	).Name("User Signup")

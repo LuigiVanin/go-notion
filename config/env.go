@@ -7,19 +7,28 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type EnvData struct  {
+type EnvData struct {
 	DatabaseURL string
-	Port int
+	Port        int
+	Salt        int
 }
 
+var GlobalEnv EnvData
+
 func LoadEnvData() (EnvData, error) {
-	env, err := godotenv.Read();
-	
-	if (err != nil) {
+	env, err := godotenv.Read()
+
+	if err != nil {
 		return EnvData{}, errors.New("nada")
 	}
 
 	url := env["DATABASE_URL"]
+	salt, err := strconv.Atoi(env["SALT"])
+
+	if err != nil {
+		salt = 10
+	}
+
 	port, err := strconv.Atoi(env["PORT"])
 
 	if err != nil {
@@ -28,6 +37,7 @@ func LoadEnvData() (EnvData, error) {
 
 	return EnvData{
 		DatabaseURL: url,
-		Port: port,
+		Port:        port,
+		Salt:        salt,
 	}, nil
 }

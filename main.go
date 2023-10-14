@@ -8,8 +8,6 @@ import (
 	conn "main/config/database"
 )
 
-
-
 func main() {
 	env, err := config.LoadEnvData()
 
@@ -20,20 +18,22 @@ func main() {
 
 	url := env.DatabaseURL
 
-	db, err	:= conn.CreateConnection(url)
+	connection, err := conn.CreateConnection(url)
 
 	fmt.Println("DATABASE: ", conn.Database)
-	
+
 	if err != nil {
-		fmt.Println(db)
+		fmt.Println(connection)
 		log.Fatal("Error connecting to database")
 		return
 	}
 
-	// migrationErr := config.Migrate(db)
+	// migrationErr := conn.Migrate(db)
 
 	// if migrationErr != nil {
 	// 	fmt.Println("Error migrating database")
 	// }
+	db, _ := connection.DB()
+	defer db.Close()
 	app.Run(&env)
 }
