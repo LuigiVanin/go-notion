@@ -18,7 +18,3 @@ func Setup(router *fiber.App) {
 		})
 	})
 }
-
-
-
-	

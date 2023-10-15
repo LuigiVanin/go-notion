@@ -15,10 +15,10 @@ func hashPassword(password string, salt int) (string, error) {
 	return string(bytes), err
 }
 
-// func comparePassword(hashedPassword string, password string) bool {
-// 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
-// 	return err == nil
-// }
+func comparePassword(hashedPassword string, password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	return err == nil
+}
 
 func CreateUser(data dto.SignupUser) error {
 	res := conn.Database.
@@ -56,4 +56,30 @@ func CreateUser(data dto.SignupUser) error {
 	}
 
 	return nil
+}
+
+func LoginUser(data dto.LoginUser) (*fiber.Map, error) {
+	user := models.User{}
+	res := conn.Database.
+		Where(&models.User{Email: data.Email}).
+		First(&user)
+
+	if res.Error != nil {
+		return nil, &fiber.Error{
+			Code:    fiber.ErrBadRequest.Code,
+			Message: "User does not exist",
+		}
+	}
+
+	if !comparePassword(user.Password, data.Password) {
+		return nil, &fiber.Error{
+			Code:    fiber.ErrBadRequest.Code,
+			Message: "Password incorrect",
+		}
+	}
+
+	return &fiber.Map{
+		"user":  user,
+		"token": "token",
+	}, nil
 }

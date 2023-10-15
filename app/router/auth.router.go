@@ -16,4 +16,9 @@ func addAuthRoutes(router *fiber.App) {
 		middleware.JsonValidatorHandler[dto.SignupUser](),
 		controllers.Signup,
 	).Name("User Signup")
+	auth.Post(
+		"/signin",
+		middleware.JsonValidatorHandler[dto.LoginUser](),
+		controllers.Login,
+	).Name("Signin")
 }
