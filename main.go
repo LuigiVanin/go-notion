@@ -10,6 +10,7 @@ import (
 
 func main() {
 	env, err := config.LoadEnvData()
+	fmt.Println("ENV: ", config.GlobalEnv)
 
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -28,11 +29,11 @@ func main() {
 		return
 	}
 
-	// migrationErr := conn.Migrate(db)
+	migrationErr := conn.Migrate()
 
-	// if migrationErr != nil {
-	// 	fmt.Println("Error migrating database")
-	// }
+	if migrationErr != nil {
+		fmt.Println("Error migrating database")
+	}
 	db, _ := connection.DB()
 	defer db.Close()
 	app.Run(&env)

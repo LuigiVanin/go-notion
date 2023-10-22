@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateConnection(url string) (*gorm.DB, error)  {
+func CreateConnection(url string) (*gorm.DB, error) {
 	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
 	if err == nil {
 		Database = db
@@ -15,15 +15,14 @@ func CreateConnection(url string) (*gorm.DB, error)  {
 	return db, err
 }
 
-func Migrate(db *gorm.DB) error {
-	err := db.AutoMigrate(&models.User{})
+func Migrate() error {
+	err := Database.AutoMigrate(&models.User{})
 	return err
 }
 
 func ConnectDB(url string) error {
 	CreateConnection(url)
-	Migrate(Database)
-
+	Migrate()
 
 	return nil
 }

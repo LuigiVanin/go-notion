@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/joho/godotenv"
@@ -9,11 +10,12 @@ import (
 
 type EnvData struct {
 	DatabaseURL string
+	JwtKey      string
 	Port        int
 	Salt        int
 }
 
-var GlobalEnv EnvData
+var GlobalEnv *EnvData
 
 func LoadEnvData() (EnvData, error) {
 	env, err := godotenv.Read()
@@ -23,6 +25,9 @@ func LoadEnvData() (EnvData, error) {
 	}
 
 	url := env["DATABASE_URL"]
+
+	fmt.Println("ENV HWT_KEY: ", env["JWT_KEY"])
+	jwtKey := env["JWT_KEY"]
 	salt, err := strconv.Atoi(env["SALT"])
 
 	if err != nil {
@@ -35,9 +40,12 @@ func LoadEnvData() (EnvData, error) {
 		port = 3000
 	}
 
-	return EnvData{
+	GlobalEnv = &EnvData{
 		DatabaseURL: url,
 		Port:        port,
 		Salt:        salt,
-	}, nil
+		JwtKey:      jwtKey,
+	}
+
+	return *GlobalEnv, nil
 }

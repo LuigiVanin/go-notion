@@ -1,10 +1,12 @@
 package services
 
 import (
+	"fmt"
 	"main/common/dto"
 	"main/config"
 	conn "main/config/database"
 	"main/models"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
@@ -78,8 +80,21 @@ func LoginUser(data dto.LoginUser) (*fiber.Map, error) {
 		}
 	}
 
+	jwtToken, err := CreateJwtToken(AuthPayload{
+		UserId: user.ID,
+		Time:   time.Now().Unix(),
+	})
+
+	if err != nil {
+		fmt.Println("ERROR ON CREATE JWT")
+		return nil, &fiber.Error{
+			Code:    fiber.ErrBadRequest.Code,
+			Message: err.Error(),
+		}
+	}
+
 	return &fiber.Map{
 		"user":  user,
-		"token": "token",
+		"token": jwtToken,
 	}, nil
 }
