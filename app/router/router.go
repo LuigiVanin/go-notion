@@ -10,6 +10,7 @@ func Setup(router *fiber.App) {
 	router.Use(middleware.Json)
 
 	addAuthRoutes(router)
+	addUserRoutes(router)
 
 	router.Use(func(ctx *fiber.Ctx) error {
 		return ctx.Status(404).JSON(fiber.Map{
