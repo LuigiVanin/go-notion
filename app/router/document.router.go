@@ -17,4 +17,23 @@ func addDocumentRoutes(router *fiber.App) {
 		middleware.JsonValidatorHandler[dto.CreateDocument](),
 		controllers.CreateDocument,
 	).Name("Create Document")
+	document.
+		Get(
+			"/",
+			middleware.JwtSecurity,
+			controllers.FetchDocuments,
+		).
+		Name("Fetch Documents")
+	document.Get(
+		"/:id",
+		middleware.JwtSecurity,
+		controllers.FetchDocument,
+	).Name("Fetch Document By Id")
+	document.Patch(
+		"/:id",
+		middleware.JwtSecurity,
+		middleware.JsonValidatorHandler[dto.CreateDocument](),
+		controllers.FetchDocument,
+	).Name("Patch Document")
+
 }
