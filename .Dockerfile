@@ -1,13 +1,15 @@
 FROM golang:1.21.3
 
-WORKDIR /go/src/app
+WORKDIR /app
 
 COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /docker-gs-ping
+EXPOSE 3000
 
-CMD ["app"]
+RUN CGO_ENABLED=0 GOOS=linux go build -o go-notion
+
+CMD ["go-notion"]
 

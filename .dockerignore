@@ -1,0 +1,8 @@
+tmp/
+.git/
+.gitignore
+.gitmodules
+README.md
+LICENSE.md
+air.toml
+docs/
