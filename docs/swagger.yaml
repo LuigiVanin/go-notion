@@ -1,0 +1,11 @@
+basePath: /
+host: localhost:3000
+info:
+  contact:
+    email: luisfvaninmartins@gmail.com
+    name: Luis Felipe Vanin
+  description: A simple swagger documentation for my go api.
+  title: Swagger Go Notion API
+  version: "1.0"
+paths: {}
+swagger: "2.0"

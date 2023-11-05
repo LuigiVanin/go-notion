@@ -11,3 +11,7 @@ type LoginUser struct {
 	Password        string `json:"password" validate:"required"`
 	PasswordConfirm string `json:"passwordConfirm" validate:"required,eqfield=Password"`
 }
+
+type UpdateUser struct {
+	Name string `json:"name" validate:"required"`
+}

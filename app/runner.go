@@ -16,7 +16,7 @@ func Run(env *config.EnvData) {
 
 	fmt.Println("\nRoutes:")
 	for _, route := range app.GetRoutes() {
-		if route.Path != "/" {
+		if route.Path != "/" && route.Method != "HEAD" {
 			fmt.Println("", route.Method, route.Path, " -> ", route.Name)
 		}
 	}

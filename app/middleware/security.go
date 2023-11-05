@@ -1,8 +1,6 @@
 package middleware
 
 import (
-	conn "main/config/database"
-	"main/models"
 	"main/services"
 
 	"github.com/gofiber/fiber/v2"
@@ -30,10 +28,9 @@ func JwtSecurity(ctx *fiber.Ctx) error {
 		}
 	}
 
-	user := &models.User{}
-	res := conn.Database.Where(&models.User{ID: data.UserId}).First(&user)
+	user, err := services.FetchUser(data.UserId)
 
-	if res.Error != nil {
+	if err != nil {
 		return &fiber.Error{
 			Code:    fiber.ErrUnauthorized.Code,
 			Message: "User already exists",

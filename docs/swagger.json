@@ -1,0 +1,15 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A simple swagger documentation for my go api.",
+        "title": "Swagger Go Notion API",
+        "contact": {
+            "name": "Luis Felipe Vanin",
+            "email": "luisfvaninmartins@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:3000",
+    "basePath": "/",
+    "paths": {}
+}
