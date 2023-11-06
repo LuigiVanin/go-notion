@@ -32,8 +32,8 @@ func addDocumentRoutes(router *fiber.App) {
 	document.Patch(
 		"/:id",
 		middleware.JwtSecurity,
-		middleware.JsonValidatorHandler[dto.CreateDocument](),
-		controllers.FetchDocument,
+		middleware.JsonValidatorHandler[dto.UpdateDocument](),
+		controllers.UpdateDocument,
 	).Name("Patch Document")
 
 }

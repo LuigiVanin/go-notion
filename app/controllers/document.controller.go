@@ -89,5 +89,31 @@ func FetchDocument(ctx *fiber.Ctx) error {
 }
 
 func UpdateDocument(ctx *fiber.Ctx) error {
-	return nil
+	auth := ctx.Locals("auth").(*models.User)
+	data := ctx.Locals("json").(*dto.UpdateDocument)
+
+	if auth == nil || data == nil {
+		return &fiber.Error{
+			Code:    fiber.ErrForbidden.Code,
+			Message: "Forbidden access",
+		}
+	}
+
+	docId := ctx.Params("id")
+
+	if docId == "" {
+		return &fiber.Error{
+			Code:    fiber.ErrBadRequest.Code,
+			Message: "Document id is required",
+		}
+	}
+
+	if document, err := services.UpdateDocumentById(docId, auth.ID, data); err != nil {
+		return err
+	} else {
+		return ctx.
+			Status(fiber.StatusCreated).
+			JSON(document)
+
+	}
 }

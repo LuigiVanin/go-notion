@@ -99,3 +99,42 @@ func FetchDocumentById(id string, userId uint) (*models.Document, error) {
 
 	return document, nil
 }
+
+func UpdateDocumentById(
+	id string,
+	userId uint,
+	data *dto.UpdateDocument,
+) (*models.Document, error) {
+	idUint, err := strconv.Atoi(id)
+	if err != nil {
+		return nil, &fiber.Error{
+			Code:    fiber.ErrBadRequest.Code,
+			Message: err.Error(),
+		}
+	}
+	query := &models.Document{
+		Base: models.Base{
+			ID: uint(idUint),
+		},
+	}
+
+	document := &models.Document{}
+	if res := conn.Database.Where(query).First(document); document.UserId != userId || res.Error != nil {
+		return nil, &fiber.Error{
+			Code:    fiber.ErrForbidden.Code,
+			Message: "Forbidden access",
+		}
+	}
+
+	res := conn.
+		Database.
+		Preload("User").
+		Where(query).
+		Updates(&models.Document{
+			Title:  data.Title,
+			Text:   data.Text,
+			Status: data.Status,
+		})
+
+	return document, res.Error
+}
