@@ -12,7 +12,7 @@ func Setup(router *fiber.App) {
 	addAuthRoutes(router)
 	addUserRoutes(router)
 	addDocumentRoutes(router)
-	addSwaggerRoutes(router)
+	// addSwaggerRoutes(router)
 
 	router.Use(func(ctx *fiber.Ctx) error {
 		return ctx.Status(404).JSON(fiber.Map{
