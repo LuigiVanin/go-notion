@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	middleware "main/app/middleware"
 
 	"github.com/gofiber/fiber/v2"
@@ -8,11 +9,19 @@ import (
 
 func Setup(router *fiber.App) {
 	router.Use(middleware.Json)
+	router.Use(middleware.Logger())
 
 	addAuthRoutes(router)
 	addUserRoutes(router)
 	addDocumentRoutes(router)
 	// addSwaggerRoutes(router)
+
+	fmt.Println("\nRoutes:")
+	for _, route := range router.GetRoutes() {
+		if route.Path != "/" && route.Method != "HEAD" {
+			fmt.Println("", route.Method, route.Path, " -> ", route.Name)
+		}
+	}
 
 	router.Use(func(ctx *fiber.Ctx) error {
 		return ctx.Status(404).JSON(fiber.Map{

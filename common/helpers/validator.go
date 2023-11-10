@@ -21,7 +21,7 @@ func ValidateJson[T interface{}](data *T) error {
 			}
 			errors = append(errors, fieldError)
 		}
-		if len(errors) > 0 {
+		if len(errors) == 0 {
 			return err
 		}
 		return &e.FieldErrors{

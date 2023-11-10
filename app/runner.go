@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"log"
+	"main/app/middleware"
 	"main/app/router"
 	config "main/config"
 
@@ -10,16 +11,11 @@ import (
 )
 
 func Run(env *config.EnvData) {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ErrorHandler: middleware.ErrorMiddleware,
+	})
 
 	router.Setup(app)
-
-	fmt.Println("\nRoutes:")
-	for _, route := range app.GetRoutes() {
-		if route.Path != "/" && route.Method != "HEAD" {
-			fmt.Println("", route.Method, route.Path, " -> ", route.Name)
-		}
-	}
 
 	log.Fatal(
 		app.Listen(fmt.Sprintf(":%d", env.Port)),

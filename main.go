@@ -19,8 +19,6 @@ import (
 // @BasePath  /
 func main() {
 	env, err := config.LoadEnvData()
-	fmt.Println("ENV: ", config.GlobalEnv)
-
 	if err != nil {
 		log.Fatal("Error loading .env file")
 		return
@@ -30,10 +28,7 @@ func main() {
 
 	connection, err := conn.CreateConnection(url)
 
-	fmt.Println("DATABASE: ", conn.Database)
-
 	if err != nil {
-		fmt.Println(connection)
 		log.Fatal("Error connecting to database")
 		return
 	}
