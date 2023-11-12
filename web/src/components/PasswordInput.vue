@@ -68,7 +68,8 @@ button.password-visibility {
     height: 25px;
     transition: all 0.2s ease-in-out;
 
-    &:hover {
+    &:hover,
+    &:focus {
         background-color: $neutral_4;
     }
 

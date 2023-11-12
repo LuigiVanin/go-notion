@@ -57,12 +57,13 @@ const handleInputEvent = (event: any) => {
     @include flex-center;
     width: 100%;
     height: 38px;
-    border: $spacing_0 solid $neutral_5;
+    border: $spacing_0 solid $neutral_6;
     padding: $spacing_6 $spacing_6;
     border-radius: $border_r_md;
     gap: $spacing_4;
     transition: $transition;
     font-family: "Poppins", sans-serif;
+    background: $neutral_2;
 
     &:hover {
         border-color: $neutral_7;
@@ -70,12 +71,12 @@ const handleInputEvent = (event: any) => {
 
     &:focus-within {
         box-shadow: 0px 0px 4px -1px $primary_5;
-        border-color: $primary_3;
+        border-color: $primary_4;
 
         :deep(svg.input-main__icon) {
             path,
             rect {
-                stroke: $primary_3;
+                stroke: $primary_4;
             }
         }
     }

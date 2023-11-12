@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"main/common/dto"
 	"main/config"
 	conn "main/config/database"
@@ -68,7 +67,7 @@ func LoginUser(data dto.LoginUser) (*fiber.Map, error) {
 
 	if res.Error != nil {
 		return nil, &fiber.Error{
-			Code:    fiber.ErrBadRequest.Code,
+			Code:    fiber.ErrNotFound.Code,
 			Message: "User does not exist",
 		}
 	}
@@ -86,12 +85,13 @@ func LoginUser(data dto.LoginUser) (*fiber.Map, error) {
 	})
 
 	if err != nil {
-		fmt.Println("ERROR ON CREATE JWT")
 		return nil, &fiber.Error{
-			Code:    fiber.ErrBadRequest.Code,
+			Code:    fiber.ErrInternalServerError.Code,
 			Message: err.Error(),
 		}
 	}
+
+	user.Password = ""
 
 	return &fiber.Map{
 		"user":  user,

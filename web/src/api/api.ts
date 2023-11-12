@@ -1,64 +1,81 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
-type ApiResponse<T, Err = unknown> = {
+type ApiErrorData = {
+    message: string;
+    code: number;
+    fields: { tag: string; field: string }[];
+};
+
+export type ApiError = AxiosError<ApiErrorData>;
+
+type ApiResponse<T, Err = ApiError> = {
     data: T | null;
     error: Err | null;
 };
 
-interface Strategy {
-    execute: (...args: any[]) => Promise<ApiResponse<unknown>>;
-}
+type Query = Record<string, string | number>;
 
-export class FetchStrategy<T> implements Strategy {
-    protected basePath: string;
+const baseUrl = import.meta.env.VITE_API_URL;
+const axiosInstance = axios.create({
+    baseURL: baseUrl,
+});
 
-    constructor(basePath: string) {
-        this.basePath = basePath;
-    }
-
-    async execute(
-        query?: Record<string, string | number>
-    ): Promise<ApiResponse<T>> {
-        try {
-            const queryString =
-                query &&
-                Object.entries(query || {})
-                    .map(([key, value]) => `${key}=${value}`)
-                    .join("&");
-            const url = queryString
-                ? `${this.basePath}?${queryString}`
-                : this.basePath;
-            const res = await axios.get(url);
-            return { data: res.data, error: null };
-        } catch (err) {
-            return { data: null, error: err };
-        }
+async function fetch<T>(
+    basePath: string,
+    query?: Query
+): Promise<ApiResponse<T>> {
+    try {
+        const queryString =
+            query &&
+            Object.entries(query || {})
+                .map(([key, value]) => `${key}=${value}`)
+                .join("&");
+        const url = queryString ? `${basePath}?${queryString}` : basePath;
+        const res = await axiosInstance.get(url);
+        return { data: res.data, error: null };
+    } catch (err) {
+        return { data: null, error: err as ApiError };
     }
 }
 
-export class CreateStrategy<R, T> implements Strategy {
-    protected basePath: string;
-
-    constructor(basePath: string) {
-        this.basePath = basePath;
-    }
-
-    async execute(payload: R): Promise<ApiResponse<T>> {
-        try {
-            const res = await axios.post(this.basePath, payload);
-            return { data: res.data, error: null };
-        } catch (err) {
-            return { data: null, error: err };
-        }
+async function create<T, R>(
+    basePath: string,
+    body?: T
+): Promise<ApiResponse<R>> {
+    try {
+        const res = await axiosInstance.post(basePath, body);
+        return { data: res.data, error: null };
+    } catch (err) {
+        return { data: null, error: err as ApiError };
     }
 }
 
-class Api {
+const registerCreateStrategy =
+    <T, R>(basePath: string) =>
+    (body?: T) =>
+        create<T, R>(basePath, body);
+
+const registerFetchStrategy =
+    <T>(basePath: string) =>
+    (query?: Query) =>
+        fetch<T>(basePath, query);
+
+interface ISigninForm {
+    email: string;
+    password: string;
+}
+
+interface SigninResponse {}
+
+interface IUser {}
+
+export class Api {
+    auth = {
+        signin: registerCreateStrategy<ISigninForm, SigninResponse>(
+            "/auth/signin"
+        ),
+    };
     user = {
-        fetch: new FetchStrategy<{ email: string }>("/api/user").execute,
-        create: new CreateStrategy<undefined, { email: string }>("/api/user")
-            .execute,
+        fetch: registerFetchStrategy<IUser>("/user"),
     };
 }
-
-export const api = new Api();

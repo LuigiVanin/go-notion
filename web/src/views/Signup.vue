@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 // Core
 import { computed, reactive, ref } from "vue";
-
-// Libraries
 import { RouterLink } from "vue-router";
 
 // Helpers & Services
@@ -19,16 +17,46 @@ import AlertBox from "@/components/core/AlertBox.vue";
 // Assets
 import emaiIconUrl from "@/assets/icons/email.svg?url";
 import keyIconUrl from "@/assets/icons/key.svg?url";
+import { z } from "zod";
 
 const api = new Api();
+
+const validation = z
+    .object({
+        name: z
+            .string()
+            .min(3, { message: "O nome deve ter no mínimo 3 caracteres" }),
+        email: z
+            .string()
+            .min(1, { message: "O email é obrigatório" })
+            .email({ message: "O email deve ser válido" }),
+        password: z
+            .string()
+            .min(6, { message: "A senha deve ter no mínimo 6 caracteres" }),
+        confirmPassword: z
+            .string()
+            .min(6, { message: "A senha deve ter no mínimo 6 caracteres" }),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: "As senhas devem ser iguais",
+        path: ["confirmPassword"],
+    });
+
 const loginForm = reactive({
+    name: "Luis",
     email: "luisfvanin9com",
     password: "senha123",
+    confirmPassword: "senha123",
 });
 
 const loginError = ref<null | ApiError>(null);
 
-const signin = async () => {
+const signup = async () => {
+    try {
+        validation.parse(loginForm);
+    } catch (err) {
+        console.log(err);
+    }
     loginError.value = null;
     const { error } = await api.auth.signin(loginForm);
     if (!error) {
@@ -61,7 +89,13 @@ const errorMessage = computed(() => {
             text="entre na sua conta usando seu email e senha. Caso não tenha conta, vá para a tela de signup"
         />
         <Card>
-            <form class="page-main__form" @submit.prevent="signin">
+            <form class="page-main__form" @submit.prevent="signup">
+                <TextInput
+                    v-model="loginForm.name"
+                    :icon="emaiIconUrl"
+                    placeholder="Insira seu nome..."
+                    label="Nome"
+                />
                 <TextInput
                     v-model="loginForm.email"
                     :icon="emaiIconUrl"
@@ -74,15 +108,21 @@ const errorMessage = computed(() => {
                     label="Senha"
                     placeholder="Insira a sua senha..."
                 />
+                <PasswordInput
+                    v-model="loginForm.confirmPassword"
+                    :icon="keyIconUrl"
+                    label="Confirmar Senha"
+                    placeholder="Repita a sua senha..."
+                />
                 <AlertBox :show="!!loginError" :text="errorMessage ?? ''" />
                 <footer>
-                    <SpecialButton text="Log In!" />
+                    <SpecialButton text="Criar conta" />
                 </footer>
             </form>
         </Card>
         <p>
             Faça Login! caso não tenha conta,
-            <RouterLink to="signup"> CRIE UMA CONTA AGORA! </RouterLink>
+            <RouterLink to="/signup"> CRIE UMA CONTA AGORA! </RouterLink>
         </p>
     </main>
 </template>

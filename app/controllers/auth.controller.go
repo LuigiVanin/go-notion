@@ -10,6 +10,7 @@ import (
 func Signup(ctx *fiber.Ctx) error {
 	singupUserData := ctx.Locals("json").(*dto.SignupUser)
 	err := services.CreateUser(*singupUserData)
+
 	if err != nil {
 		return err
 	}

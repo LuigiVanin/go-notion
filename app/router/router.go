@@ -5,9 +5,13 @@ import (
 	middleware "main/app/middleware"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func Setup(router *fiber.App) {
+	router.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+	}))
 	router.Use(middleware.Json)
 	router.Use(middleware.Logger())
 
