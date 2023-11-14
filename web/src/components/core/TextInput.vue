@@ -4,30 +4,27 @@ import InlineSvg from "vue-inline-svg";
 
 // Components
 import Label from "./Label.vue";
+import { InputProps } from "@/types/props";
+import { computed } from "vue";
 
-type TextInput = {
-    modelValue: string;
-    placeholder?: string;
-    type?: string;
-    name?: string;
-    rightIcon?: string;
-    icon?: string;
-    maxWidth?: string;
-    label?: string;
-};
+type TextInputProps = InputProps & {};
 
-const props = defineProps<TextInput>();
-const emit = defineEmits(["update:modelValue"]);
+const props = defineProps<TextInputProps>();
+const emit = defineEmits(["update:modelValue", "blur"]);
 
 const handleInputEvent = (event: any) => {
     emit("update:modelValue", event.target.value);
 };
+
+const hasError = computed(() => {
+    return props.errorMessage !== undefined && props.errorMessage !== null;
+});
 </script>
 
 <template>
     <div class="input-main__wrapper">
         <Label v-if="props.label" :text="props.label" :for="props.name" />
-        <div class="input-main">
+        <div :class="['input-main', hasError && 'input-main--error']">
             <slot name="prefix">
                 <InlineSvg :src="props.icon" class="input-main__icon" />
             </slot>
@@ -39,11 +36,17 @@ const handleInputEvent = (event: any) => {
                 :type="props.type || 'text'"
                 :style="{ maxWidth: maxWidth }"
                 @input="handleInputEvent"
+                @blur="emit('blur')"
             />
             <slot name="suffix">
                 <InlineSvg :src="props.rightIcon" class="input-main__icon" />
             </slot>
         </div>
+        <Transition name="error-fade">
+            <p v-if="props.errorMessage" class="input-main__warning">
+                {{ props.errorMessage }}
+            </p>
+        </Transition>
     </div>
 </template>
 
@@ -51,6 +54,17 @@ const handleInputEvent = (event: any) => {
 .input-main__wrapper {
     width: 100%;
     @include flex(column, start, start);
+
+    p.input-main__warning {
+        @include line-clamp();
+        width: 100%;
+        color: $red_4;
+        font-size: $font_1;
+        padding-top: $spacing_4;
+        padding-left: $spacing_2;
+        height: 17px;
+        transition: all 0.2s ease-in-out;
+    }
 }
 
 .input-main {
@@ -81,13 +95,6 @@ const handleInputEvent = (event: any) => {
         }
     }
 
-    input {
-        width: 100%;
-        font-size: $font_4;
-        color: $neutral_9;
-        padding-bottom: $spacing_1 !important;
-        @include reset-input();
-    }
     :deep(svg.input-main__icon) {
         width: 20px;
         height: 20px;
@@ -97,5 +104,42 @@ const handleInputEvent = (event: any) => {
             stroke: $neutral_7;
         }
     }
+
+    &--error {
+        border-color: $red_4 !important;
+
+        :deep(svg.input-main__icon) {
+            path,
+            rect {
+                stroke: $red_4 !important;
+            }
+        }
+
+        &:hover {
+            border-color: $red_5;
+        }
+    }
+
+    input {
+        width: 100%;
+        font-size: $font_4;
+        color: $neutral_9;
+        padding-bottom: $spacing_1 !important;
+        @include reset-input();
+    }
+}
+
+.error-fade-enter-active,
+.error-fade-leave-active {
+    height: 17px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.error-fade-enter-from,
+.error-fade-leave-from {
+    opacity: 0;
+    height: 0px;
+    transform: translateY(-5px);
 }
 </style>

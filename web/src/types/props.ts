@@ -7,4 +7,5 @@ export type InputProps = {
     icon?: string;
     maxWidth?: string;
     label?: string;
+    errorMessage?: string | null | undefined;
 };

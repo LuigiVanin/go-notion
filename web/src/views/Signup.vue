@@ -18,47 +18,51 @@ import AlertBox from "@/components/core/AlertBox.vue";
 import emaiIconUrl from "@/assets/icons/email.svg?url";
 import keyIconUrl from "@/assets/icons/key.svg?url";
 import { z } from "zod";
+import { useValidation } from "@/composables/useValidation.ts";
 
 const api = new Api();
 
-const validation = z
-    .object({
-        name: z
-            .string()
-            .min(3, { message: "O nome deve ter no mínimo 3 caracteres" }),
-        email: z
-            .string()
-            .min(1, { message: "O email é obrigatório" })
-            .email({ message: "O email deve ser válido" }),
-        password: z
-            .string()
-            .min(6, { message: "A senha deve ter no mínimo 6 caracteres" }),
-        confirmPassword: z
-            .string()
-            .min(6, { message: "A senha deve ter no mínimo 6 caracteres" }),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-        message: "As senhas devem ser iguais",
-        path: ["confirmPassword"],
-    });
-
-const loginForm = reactive({
+const signupForm = reactive({
     name: "Luis",
     email: "luisfvanin9com",
     password: "senha123",
     confirmPassword: "senha123",
 });
 
+const phone = ref("");
+
+const validation = z.object({
+    name: z
+        .string()
+        .min(5, { message: "O nome deve ter no mínimo 3 caracteres" })
+        .refine((data) => data.split(" ").length >= 2, {
+            message: "O nome deve ter nome e sobrenome",
+        }),
+    email: z
+        .string()
+        .min(1, { message: "O email é obrigatório" })
+        .email({ message: "O email deve ser válido" }),
+    password: z
+        .string()
+        .min(6, { message: "A senha deve ter no mínimo 6 caracteres" }),
+    confirmPassword: z
+        .string()
+        .min(6, { message: "A senha deve ter no mínimo 6 caracteres" })
+        .refine((data) => data === signupForm.password, {
+            message: "As senhas devem ser iguais",
+        }),
+});
+
+const { fieldErrors, validate } = useValidation(signupForm, validation);
+
 const loginError = ref<null | ApiError>(null);
 
 const signup = async () => {
-    try {
-        validation.parse(loginForm);
-    } catch (err) {
-        console.log(err);
-    }
+    const isValid = validate();
+    if (!isValid) return;
+
     loginError.value = null;
-    const { error } = await api.auth.signin(loginForm);
+    const { error } = await api.auth.signup(signupForm);
     if (!error) {
         return;
     }
@@ -91,32 +95,46 @@ const errorMessage = computed(() => {
         <Card>
             <form class="page-main__form" @submit.prevent="signup">
                 <TextInput
-                    v-model="loginForm.name"
+                    v-model="signupForm.name"
                     :icon="emaiIconUrl"
+                    :error-message="fieldErrors.name"
                     placeholder="Insira seu nome..."
                     label="Nome"
+                    @blur="validate('name')"
                 />
                 <TextInput
-                    v-model="loginForm.email"
+                    v-model="signupForm.email"
                     :icon="emaiIconUrl"
+                    :error-message="fieldErrors.email"
                     placeholder="Insira seu email..."
                     label="Email"
+                    @blur="validate('email')"
+                />
+                <TextInput
+                    v-model="phone"
+                    :icon="emaiIconUrl"
+                    placeholder="+55 (11) 99999-9999"
+                    label="Telefone"
                 />
                 <PasswordInput
-                    v-model="loginForm.password"
+                    v-model="signupForm.password"
                     :icon="keyIconUrl"
+                    :error-message="fieldErrors.password"
                     label="Senha"
                     placeholder="Insira a sua senha..."
+                    @blur="validate('password')"
                 />
                 <PasswordInput
-                    v-model="loginForm.confirmPassword"
+                    v-model="signupForm.confirmPassword"
                     :icon="keyIconUrl"
+                    :error-message="fieldErrors.confirmPassword"
                     label="Confirmar Senha"
                     placeholder="Repita a sua senha..."
+                    @blur="validate('confirmPassword')"
                 />
                 <AlertBox :show="!!loginError" :text="errorMessage ?? ''" />
                 <footer>
-                    <SpecialButton text="Criar conta" />
+                    <SpecialButton text="Criar conta" type="submit" />
                 </footer>
             </form>
         </Card>

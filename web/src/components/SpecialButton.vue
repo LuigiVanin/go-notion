@@ -12,6 +12,7 @@ import magicStarsIconUrl from "@/assets/icons/magic-stars.svg?url";
 type SpecialButtonProps = {
     text: string;
     loading?: boolean;
+    type?: "button" | "submit" | "reset";
 };
 
 const props = defineProps<SpecialButtonProps>();
@@ -46,7 +47,7 @@ watch(y, mouseUpdate);
 </script>
 
 <template>
-    <button ref="specialButtonEl" @click="emit('click')">
+    <button ref="specialButtonEl" @click="emit('click')" :type="props.type">
         <span class="backdrop" />
         <span>
             <InlineSvg :src="magicStarsIconUrl" />

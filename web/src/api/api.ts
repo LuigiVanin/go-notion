@@ -65,6 +65,11 @@ interface ISigninForm {
     password: string;
 }
 
+interface SignupForm extends ISigninForm {
+    confirmPassword: string;
+    name: string;
+}
+
 interface SigninResponse {}
 
 interface IUser {}
@@ -73,6 +78,9 @@ export class Api {
     auth = {
         signin: registerCreateStrategy<ISigninForm, SigninResponse>(
             "/auth/signin"
+        ),
+        signup: registerCreateStrategy<ISigninForm, SigninResponse>(
+            "/auth/signup"
         ),
     };
     user = {

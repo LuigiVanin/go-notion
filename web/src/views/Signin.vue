@@ -4,9 +4,13 @@ import { computed, reactive, ref } from "vue";
 
 // Libraries
 import { RouterLink } from "vue-router";
+import { z } from "zod";
 
 // Helpers & Services
 import { Api, type ApiError } from "@/api/api.ts";
+
+// Composables
+import { useValidation } from "@/composables/useValidation.ts";
 
 // Components
 import Card from "@/components/core/Card.vue";
@@ -21,15 +25,25 @@ import emaiIconUrl from "@/assets/icons/email.svg?url";
 import keyIconUrl from "@/assets/icons/key.svg?url";
 
 const api = new Api();
+
+const loginFormRule = z.object({
+    email: z.string().email("Email inválido!"),
+    password: z.string().min(6, "Senha deve ter no mínimo 6 caracteres!"),
+});
+
 const loginForm = reactive({
     email: "luisfvanin9com",
     password: "senha123",
 });
-
 const loginError = ref<null | ApiError>(null);
+
+const { fieldErrors, validate } = useValidation(loginForm, loginFormRule);
 
 const signin = async () => {
     loginError.value = null;
+    const isValidForm = validate();
+
+    if (!isValidForm) return;
     const { error } = await api.auth.signin(loginForm);
     if (!error) {
         return;
@@ -65,14 +79,18 @@ const errorMessage = computed(() => {
                 <TextInput
                     v-model="loginForm.email"
                     :icon="emaiIconUrl"
+                    :error-message="fieldErrors.email"
                     placeholder="Insira seu email..."
                     label="Email"
+                    @blur="validate('email')"
                 />
                 <PasswordInput
                     v-model="loginForm.password"
                     :icon="keyIconUrl"
+                    :error-message="fieldErrors.password"
                     label="Senha"
                     placeholder="Insira a sua senha..."
+                    @blur="validate('password')"
                 />
                 <AlertBox :show="!!loginError" :text="errorMessage ?? ''" />
                 <footer>

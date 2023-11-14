@@ -19,7 +19,7 @@ import openLockIconUrl from "@/assets/icons/open-lock.svg?url";
 type PasswordInputProps = {} & InputProps;
 
 const props = defineProps<PasswordInputProps>();
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "blur"]);
 
 const passwordVisibility = ref(false);
 
@@ -37,11 +37,14 @@ const togglePasswordVisibility = () => {
         :name="props.name"
         :placeholder="props.placeholder"
         :icon="keyIconUrl"
+        :error-message="props.errorMessage"
         @update:model-value="emit('update:modelValue', $event)"
+        @blur="emit('blur')"
     >
         <template #suffix>
             <button
                 class="password-visibility"
+                type="button"
                 @click="togglePasswordVisibility"
             >
                 <InlineSvg
