@@ -1,23 +1,57 @@
 <script lang="ts" setup>
 // Core
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute } from "vue-router";
+import { computed } from "vue";
 
 // Components
 import Button from "../core/Button.vue";
 
 // Assets
 import signIconUrl from "@/assets/icons/sign.svg?url";
+import signinIconUrl from "@/assets/icons/signin.svg?url";
+
+type HeaderContent = {
+    buttonText: string;
+    link: string;
+    icon: string;
+};
+
+const route = useRoute();
+
+const headerContent: Record<string, HeaderContent> = {
+    "/signup": {
+        buttonText: "Login",
+        link: "/",
+        icon: signinIconUrl,
+    },
+    "/": {
+        buttonText: "Sign up",
+        link: "/signup",
+        icon: signIconUrl,
+    },
+};
+
+const content = computed(() => {
+    if (!route.path) {
+        return {
+            buttonText: "Sign up",
+            link: "/signup",
+            icon: signIconUrl,
+        };
+    }
+    return headerContent[route?.path as string];
+});
 </script>
 
 <template>
     <header class="app-header">
-        <div class="app-heaeder__content">
-            <span class="app-heaeder__content__login">Writabble</span>
+        <div class="app-header__content">
+            <span class="app-header__content__login">Writabble</span>
 
-            <RouterLink to="/signup">
+            <RouterLink :to="content?.link || ''">
                 <Button
                     :icon="signIconUrl"
-                    text="Sign up"
+                    :text="content?.buttonText"
                     btn-type="outlined"
                     size="md"
                 />
@@ -36,9 +70,9 @@ header.app-header {
 
     height: 50px;
 
-    .app-heaeder__content {
+    .app-header__content {
         width: 100%;
-        max-width: 868px;
+        max-width: 1080px;
         @include flex(row, center, space-between);
         padding-inline: $spacing_13;
 

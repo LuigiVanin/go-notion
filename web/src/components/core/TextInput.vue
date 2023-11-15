@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 // Libraries
 import InlineSvg from "vue-inline-svg";
+import { vMaska } from "maska";
 
 // Components
 import Label from "./Label.vue";
@@ -30,6 +31,8 @@ const hasError = computed(() => {
             </slot>
 
             <input
+                v-maska
+                :data-maska="props.mask"
                 :value="props.modelValue"
                 :placeholder="props.placeholder"
                 :name="props.name"
@@ -89,7 +92,8 @@ const hasError = computed(() => {
 
         :deep(svg.input-main__icon) {
             path,
-            rect {
+            rect,
+            circle {
                 stroke: $primary_4;
             }
         }
@@ -100,7 +104,8 @@ const hasError = computed(() => {
         height: 20px;
 
         path,
-        rect {
+        rect,
+        circle {
             stroke: $neutral_7;
         }
     }
@@ -110,7 +115,8 @@ const hasError = computed(() => {
 
         :deep(svg.input-main__icon) {
             path,
-            rect {
+            rect,
+            circle {
                 stroke: $red_4 !important;
             }
         }

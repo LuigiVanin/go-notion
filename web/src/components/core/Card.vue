@@ -1,8 +1,15 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+type CardProps = {
+    loading?: boolean;
+};
+
+const props = defineProps<CardProps>();
+</script>
 
 <template>
     <div class="card">
         <slot />
+        <span v-if="props.loading" class="card__loading" />
     </div>
 </template>
 
@@ -15,5 +22,47 @@
     border-radius: $border_r_lg;
     @include flex(column, start, start);
     background: $neutral_1;
+    position: relative;
+    overflow: hidden;
+
+    span.card__loading {
+        position: absolute;
+        background: $primary_4;
+        bottom: 0px;
+        left: 0px;
+        width: 100px;
+        height: 5px;
+        z-index: 10;
+        border-radius: 3px;
+
+        animation: bar-loading 2.5s infinite $transition_spring;
+    }
+}
+
+@keyframes bar-loading {
+    0% {
+        left: 0px;
+        width: 10%;
+    }
+
+    15% {
+        left: 0px;
+        width: 100%;
+    }
+
+    50% {
+        left: 90%;
+        width: 10%;
+    }
+
+    75% {
+        left: 0%;
+        width: 100%;
+    }
+
+    100% {
+        left: 0px;
+        width: 10%;
+    }
 }
 </style>

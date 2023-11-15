@@ -8,4 +8,5 @@ export type InputProps = {
     maxWidth?: string;
     label?: string;
     errorMessage?: string | null | undefined;
+    mask?: string;
 };

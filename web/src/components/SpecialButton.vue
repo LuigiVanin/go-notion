@@ -13,6 +13,7 @@ type SpecialButtonProps = {
     text: string;
     loading?: boolean;
     type?: "button" | "submit" | "reset";
+    disabled?: boolean;
 };
 
 const props = defineProps<SpecialButtonProps>();
@@ -47,7 +48,12 @@ watch(y, mouseUpdate);
 </script>
 
 <template>
-    <button ref="specialButtonEl" @click="emit('click')" :type="props.type">
+    <button
+        ref="specialButtonEl"
+        :type="props.type"
+        :disabled="props.disabled"
+        @click="emit('click')"
+    >
         <span class="backdrop" />
         <span>
             <InlineSvg :src="magicStarsIconUrl" />
@@ -82,9 +88,14 @@ button {
     transition: transform 0.1s;
     color: hsl(0 0% 20%);
 
-    &:is(:hover, :focus-visible) {
+    &:is(:hover, :focus-visible):not(:disabled) {
         --hover: 1;
         /*   border-color: transparent !important; */
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 
     &:active {

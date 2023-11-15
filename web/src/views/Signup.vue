@@ -3,8 +3,14 @@
 import { computed, reactive, ref } from "vue";
 import { RouterLink } from "vue-router";
 
+// Libraries
+import { z } from "zod";
+
 // Helpers & Services
 import { Api, type ApiError } from "@/api/api.ts";
+
+// Composables
+import { useValidation } from "@/composables/useValidation.ts";
 
 // Components
 import Card from "@/components/core/Card.vue";
@@ -17,8 +23,8 @@ import AlertBox from "@/components/core/AlertBox.vue";
 // Assets
 import emaiIconUrl from "@/assets/icons/email.svg?url";
 import keyIconUrl from "@/assets/icons/key.svg?url";
-import { z } from "zod";
-import { useValidation } from "@/composables/useValidation.ts";
+import keypadIconUrl from "@/assets/icons/keypad-outline.svg?url";
+import userIconUrl from "@/assets/icons/user.svg?url";
 
 const api = new Api();
 
@@ -30,6 +36,7 @@ const signupForm = reactive({
 });
 
 const phone = ref("");
+const signupLoading = ref(false);
 
 const validation = z.object({
     name: z
@@ -62,7 +69,9 @@ const signup = async () => {
     if (!isValid) return;
 
     loginError.value = null;
+    signupLoading.value = true;
     const { error } = await api.auth.signup(signupForm);
+
     if (!error) {
         return;
     }
@@ -92,11 +101,11 @@ const errorMessage = computed(() => {
             title="Faça login na sua conta!"
             text="entre na sua conta usando seu email e senha. Caso não tenha conta, vá para a tela de signup"
         />
-        <Card>
+        <Card :loading="signupLoading">
             <form class="page-main__form" @submit.prevent="signup">
                 <TextInput
                     v-model="signupForm.name"
-                    :icon="emaiIconUrl"
+                    :icon="userIconUrl"
                     :error-message="fieldErrors.name"
                     placeholder="Insira seu nome..."
                     label="Nome"
@@ -112,7 +121,8 @@ const errorMessage = computed(() => {
                 />
                 <TextInput
                     v-model="phone"
-                    :icon="emaiIconUrl"
+                    :icon="keypadIconUrl"
+                    mask="+## (##) #####-####"
                     placeholder="+55 (11) 99999-9999"
                     label="Telefone"
                 />
@@ -134,7 +144,11 @@ const errorMessage = computed(() => {
                 />
                 <AlertBox :show="!!loginError" :text="errorMessage ?? ''" />
                 <footer>
-                    <SpecialButton text="Criar conta" type="submit" />
+                    <SpecialButton
+                        text="Criar conta"
+                        type="submit"
+                        :disabled="signupLoading"
+                    />
                 </footer>
             </form>
         </Card>
@@ -181,8 +195,12 @@ main.page-main {
                 width: 75%;
                 transition: all 0.2s $transition_spring;
 
-                &:hover {
+                &:not(:disabled):hover {
                     width: 100%;
+                }
+
+                &:disabled {
+                    cursor: progress;
                 }
             }
         }

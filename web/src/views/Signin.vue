@@ -35,6 +35,7 @@ const loginForm = reactive({
     email: "luisfvanin9com",
     password: "senha123",
 });
+const loginLoading = ref(false);
 const loginError = ref<null | ApiError>(null);
 
 const { fieldErrors, validate } = useValidation(loginForm, loginFormRule);
@@ -44,6 +45,7 @@ const signin = async () => {
     const isValidForm = validate();
 
     if (!isValidForm) return;
+    loginLoading.value = true;
     const { error } = await api.auth.signin(loginForm);
     if (!error) {
         return;
@@ -74,7 +76,7 @@ const errorMessage = computed(() => {
             title="Faça login na sua conta!"
             text="entre na sua conta usando seu email e senha. Caso não tenha conta, vá para a tela de signup"
         />
-        <Card>
+        <Card :loading="loginLoading">
             <form class="page-main__form" @submit.prevent="signin">
                 <TextInput
                     v-model="loginForm.email"
@@ -94,7 +96,7 @@ const errorMessage = computed(() => {
                 />
                 <AlertBox :show="!!loginError" :text="errorMessage ?? ''" />
                 <footer>
-                    <SpecialButton text="Log In!" />
+                    <SpecialButton :disabled="loginLoading" text="Log In!" />
                 </footer>
             </form>
         </Card>
