@@ -9,4 +9,5 @@ export type InputProps = {
     label?: string;
     errorMessage?: string | null | undefined;
     mask?: string;
+    optional?: boolean;
 };

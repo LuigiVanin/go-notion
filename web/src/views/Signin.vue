@@ -1,30 +1,27 @@
 <script lang="ts" setup>
 // Core
-import { computed, reactive, ref } from "vue";
+import { computed, reactive } from "vue";
+import { useRouter } from "vue-router";
 
 // Libraries
 import { RouterLink } from "vue-router";
 import { z } from "zod";
 
-// Helpers & Services
-import { Api, type ApiError } from "@/api/api.ts";
-
 // Composables
 import { useValidation } from "@/composables/useValidation.ts";
+import { useSignin } from "@/composables/api/useSignin.ts";
 
 // Components
 import Card from "@/components/core/Card.vue";
 import TextInput from "@/components/core/TextInput.vue";
 import PasswordInput from "@/components/PasswordInput.vue";
 import SpecialButton from "@/components/SpecialButton.vue";
-import PageTitle from "@/components/layout/PageTitle.vue";
+import PageTitle from "@/components/layout/partials/PageTitle.vue";
 import AlertBox from "@/components/core/AlertBox.vue";
 
 // Assets
 import emaiIconUrl from "@/assets/icons/email.svg?url";
 import keyIconUrl from "@/assets/icons/key.svg?url";
-
-const api = new Api();
 
 const loginFormRule = z.object({
     email: z.string().email("Email inválido!"),
@@ -35,23 +32,19 @@ const loginForm = reactive({
     email: "luisfvanin9com",
     password: "senha123",
 });
-const loginLoading = ref(false);
-const loginError = ref<null | ApiError>(null);
 
+const router = useRouter();
 const { fieldErrors, validate } = useValidation(loginForm, loginFormRule);
+const { loginLoading, loginError, signin } = useSignin();
 
-const signin = async () => {
-    loginError.value = null;
+const handleSignin = async () => {
     const isValidForm = validate();
 
     if (!isValidForm) return;
-    loginLoading.value = true;
-    const { error } = await api.auth.signin(loginForm);
-    if (!error) {
-        return;
-    }
+    await signin(loginForm);
+    if (loginError.value) return;
 
-    loginError.value = error;
+    router.push("/home");
 };
 
 const errorMessage = computed(() => {
@@ -77,7 +70,7 @@ const errorMessage = computed(() => {
             text="entre na sua conta usando seu email e senha. Caso não tenha conta, vá para a tela de signup"
         />
         <Card :loading="loginLoading">
-            <form class="page-main__form" @submit.prevent="signin">
+            <form class="page-main__form" @submit.prevent="handleSignin">
                 <TextInput
                     v-model="loginForm.email"
                     :icon="emaiIconUrl"
@@ -126,6 +119,11 @@ main.page-main {
         :deep(a) {
             color: $primary_4;
             font-weight: 500;
+            transition: all 0.2s;
+
+            &:hover {
+                color: $primary_5;
+            }
         }
     }
 

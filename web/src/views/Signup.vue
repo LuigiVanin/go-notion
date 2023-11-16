@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 // Core
 import { computed, reactive, ref } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 
 // Libraries
+import { useToast } from "vue-toastification";
 import { z } from "zod";
 
-// Helpers & Services
-import { Api, type ApiError } from "@/api/api.ts";
-
 // Composables
+import { useSignup } from "@/composables/api/useSignup.ts";
 import { useValidation } from "@/composables/useValidation.ts";
 
 // Components
@@ -17,7 +16,7 @@ import Card from "@/components/core/Card.vue";
 import TextInput from "@/components/core/TextInput.vue";
 import PasswordInput from "@/components/PasswordInput.vue";
 import SpecialButton from "@/components/SpecialButton.vue";
-import PageTitle from "@/components/layout/PageTitle.vue";
+import PageTitle from "@/components/layout/partials/PageTitle.vue";
 import AlertBox from "@/components/core/AlertBox.vue";
 
 // Assets
@@ -26,17 +25,13 @@ import keyIconUrl from "@/assets/icons/key.svg?url";
 import keypadIconUrl from "@/assets/icons/keypad-outline.svg?url";
 import userIconUrl from "@/assets/icons/user.svg?url";
 
-const api = new Api();
-
 const signupForm = reactive({
     name: "Luis",
     email: "luisfvanin9com",
     password: "senha123",
-    confirmPassword: "senha123",
+    passwordConfirm: "senha123",
 });
-
 const phone = ref("");
-const signupLoading = ref(false);
 
 const validation = z.object({
     name: z
@@ -52,7 +47,7 @@ const validation = z.object({
     password: z
         .string()
         .min(6, { message: "A senha deve ter no mínimo 6 caracteres" }),
-    confirmPassword: z
+    passwordConfirm: z
         .string()
         .min(6, { message: "A senha deve ter no mínimo 6 caracteres" })
         .refine((data) => data === signupForm.password, {
@@ -61,33 +56,32 @@ const validation = z.object({
 });
 
 const { fieldErrors, validate } = useValidation(signupForm, validation);
+const { signup, signupError, signupLoading } = useSignup();
+const toast = useToast();
+const router = useRouter();
 
-const loginError = ref<null | ApiError>(null);
-
-const signup = async () => {
+const handleSignup = async () => {
     const isValid = validate();
     if (!isValid) return;
 
-    loginError.value = null;
-    signupLoading.value = true;
-    const { error } = await api.auth.signup(signupForm);
+    await signup(signupForm);
 
-    if (!error) {
+    if (signupError.value) {
         return;
     }
-
-    loginError.value = error;
+    toast.success("Conta criada com sucesso!");
+    router.push("/");
 };
 
 const errorMessage = computed(() => {
-    const data = loginError.value?.response?.data;
+    const data = signupError.value?.response?.data;
     if (!data) return "Erro na requisição";
 
     if (data.fields?.length) {
         return "Um campo do formulário está incorreto!";
     }
-    if ([404, 400].includes(data.code)) {
-        return "Email inexistente ou senha incorretos!";
+    if ([400].includes(data.code)) {
+        return "Email utilizado já existe na plataforma!";
     }
 
     if (data.message) return data.message;
@@ -98,11 +92,11 @@ const errorMessage = computed(() => {
 <template>
     <main class="page-main">
         <PageTitle
-            title="Faça login na sua conta!"
-            text="entre na sua conta usando seu email e senha. Caso não tenha conta, vá para a tela de signup"
+            title="Crie a sua conta!"
+            text="Crie a sua conta usando seus dados pessoais. Caso já tenha conta, vá para a tela de login"
         />
         <Card :loading="signupLoading">
-            <form class="page-main__form" @submit.prevent="signup">
+            <form class="page-main__form" @submit.prevent="handleSignup">
                 <TextInput
                     v-model="signupForm.name"
                     :icon="userIconUrl"
@@ -125,6 +119,7 @@ const errorMessage = computed(() => {
                     mask="+## (##) #####-####"
                     placeholder="+55 (11) 99999-9999"
                     label="Telefone"
+                    optional
                 />
                 <PasswordInput
                     v-model="signupForm.password"
@@ -135,14 +130,14 @@ const errorMessage = computed(() => {
                     @blur="validate('password')"
                 />
                 <PasswordInput
-                    v-model="signupForm.confirmPassword"
+                    v-model="signupForm.passwordConfirm"
                     :icon="keyIconUrl"
-                    :error-message="fieldErrors.confirmPassword"
+                    :error-message="fieldErrors.passwordConfirm"
                     label="Confirmar Senha"
                     placeholder="Repita a sua senha..."
-                    @blur="validate('confirmPassword')"
+                    @blur="validate('passwordConfirm')"
                 />
-                <AlertBox :show="!!loginError" :text="errorMessage ?? ''" />
+                <AlertBox :show="!!signupError" :text="errorMessage ?? ''" />
                 <footer>
                     <SpecialButton
                         text="Criar conta"
@@ -153,8 +148,8 @@ const errorMessage = computed(() => {
             </form>
         </Card>
         <p>
-            Faça Login! caso não tenha conta,
-            <RouterLink to="/signup"> CRIE UMA CONTA AGORA! </RouterLink>
+            Crie a sua conta! caso já tenha conta,
+            <RouterLink to="/"> VÁ PARA A TELA DE LOGIN! </RouterLink>
         </p>
     </main>
 </template>
@@ -178,6 +173,10 @@ main.page-main {
         :deep(a) {
             color: $primary_4;
             font-weight: 500;
+
+            &:hover {
+                color: $primary_5;
+            }
         }
     }
 

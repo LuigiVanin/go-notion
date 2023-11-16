@@ -87,6 +87,7 @@ button {
     );
     transition: transform 0.1s;
     color: hsl(0 0% 20%);
+    height: 45px;
 
     &:is(:hover, :focus-visible):not(:disabled) {
         --hover: 1;

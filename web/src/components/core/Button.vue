@@ -73,7 +73,9 @@ button.button-main {
     }
 
     :deep(svg.button-main__icon) {
-        path {
+        path,
+        rect,
+        circle {
             stroke: currentColor;
         }
     }

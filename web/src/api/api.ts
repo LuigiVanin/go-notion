@@ -1,19 +1,6 @@
-import axios, { AxiosError } from "axios";
-
-type ApiErrorData = {
-    message: string;
-    code: number;
-    fields: { tag: string; field: string }[];
-};
-
-export type ApiError = AxiosError<ApiErrorData>;
-
-type ApiResponse<T, Err = ApiError> = {
-    data: T | null;
-    error: Err | null;
-};
-
-type Query = Record<string, string | number>;
+import { ApiError, ApiResponse, Query } from "@/types/api";
+import { ISigninForm, SigninResponse, SignupForm } from "@/types/user";
+import axios from "axios";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const axiosInstance = axios.create({
@@ -60,18 +47,6 @@ const registerFetchStrategy =
     (query?: Query) =>
         fetch<T>(basePath, query);
 
-interface ISigninForm {
-    email: string;
-    password: string;
-}
-
-interface SignupForm extends ISigninForm {
-    confirmPassword: string;
-    name: string;
-}
-
-interface SigninResponse {}
-
 interface IUser {}
 
 export class Api {
@@ -79,7 +54,7 @@ export class Api {
         signin: registerCreateStrategy<ISigninForm, SigninResponse>(
             "/auth/signin"
         ),
-        signup: registerCreateStrategy<ISigninForm, SigninResponse>(
+        signup: registerCreateStrategy<SignupForm, SigninResponse>(
             "/auth/signup"
         ),
     };

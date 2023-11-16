@@ -24,7 +24,12 @@ const hasError = computed(() => {
 
 <template>
     <div class="input-main__wrapper">
-        <Label v-if="props.label" :text="props.label" :for="props.name" />
+        <Label
+            v-if="props.label"
+            :text="props.label"
+            :for="props.name"
+            :optional="props.optional"
+        />
         <div :class="['input-main', hasError && 'input-main--error']">
             <slot name="prefix">
                 <InlineSvg :src="props.icon" class="input-main__icon" />
@@ -130,7 +135,7 @@ const hasError = computed(() => {
         width: 100%;
         font-size: $font_4;
         color: $neutral_9;
-        padding-bottom: $spacing_1 !important;
+        padding-bottom: $spacing_0 !important;
         @include reset-input();
     }
 }

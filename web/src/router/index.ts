@@ -1,10 +1,13 @@
+// Core
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+
+// Libraries
 import NProgress from "nprogress";
 
 const routes: RouteRecordRaw[] = [
     {
         path: "/",
-        component: () => import("@/layouts/Layout.vue"),
+        component: () => import("@/components/layout/Layout.vue"),
         children: [
             {
                 path: "/signup",
@@ -20,7 +23,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: "/",
-        component: () => import("@/layouts/Layout.vue"),
+        component: () => import("@/components/layout/AuthLayout.vue"),
         children: [
             {
                 path: "/home",

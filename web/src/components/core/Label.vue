@@ -2,6 +2,7 @@
 type LabelProps = {
     text: string;
     for?: string;
+    optional?: boolean;
 };
 
 const props = defineProps<LabelProps>();
@@ -12,6 +13,7 @@ const props = defineProps<LabelProps>();
         <span>
             {{ props.text }}
         </span>
+        <span v-if="props.optional" class="label__optional">(optional)</span>
     </label>
 </template>
 
@@ -24,5 +26,12 @@ label {
     display: block;
     font-weight: 500;
     padding-left: $spacing_2;
+
+    span.label__optional {
+        color: $neutral_8;
+        font-size: $font_1;
+        font-weight: 500;
+        padding-left: $spacing_1;
+    }
 }
 </style>

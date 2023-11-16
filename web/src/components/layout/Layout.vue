@@ -4,7 +4,7 @@ import { RouterView } from "vue-router";
 
 // Components
 import InlineSvg from "vue-inline-svg";
-import InitialHeader from "@/components/layout/InitialHeader.vue";
+import InitialHeader from "@/components/layout/partials/InitialHeader.vue";
 
 // Assets
 import gradientBackgroundUrl from "@/assets/illustration/background.svg?url";

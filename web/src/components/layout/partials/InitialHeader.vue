@@ -4,7 +4,7 @@ import { RouterLink, useRoute } from "vue-router";
 import { computed } from "vue";
 
 // Components
-import Button from "../core/Button.vue";
+import Button from "@/components/core/Button.vue";
 
 // Assets
 import signIconUrl from "@/assets/icons/sign.svg?url";
@@ -50,7 +50,7 @@ const content = computed(() => {
 
             <RouterLink :to="content?.link || ''">
                 <Button
-                    :icon="signIconUrl"
+                    :icon="content?.icon"
                     :text="content?.buttonText"
                     btn-type="outlined"
                     size="md"
@@ -65,8 +65,8 @@ header.app-header {
     @include flex(row, center, center);
     z-index: 5;
     width: 100%;
-    position: fixed;
     top: 0;
+    position: fixed;
 
     height: 50px;
 
