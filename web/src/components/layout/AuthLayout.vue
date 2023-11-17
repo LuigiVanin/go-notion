@@ -19,5 +19,7 @@ import AuthHeader from "./partials/AuthHeader.vue";
     height: 100vh;
     position: relative;
     background: $neutral_2;
+
+    transition: all 0.3s ease-in-out;
 }
 </style>

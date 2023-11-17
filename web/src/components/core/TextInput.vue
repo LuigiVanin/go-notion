@@ -78,7 +78,7 @@ const hasError = computed(() => {
 .input-main {
     @include flex-center;
     width: 100%;
-    height: 38px;
+    height: $text_input_height;
     border: $spacing_0 solid $neutral_6;
     padding: $spacing_6 $spacing_6;
     border-radius: $border_r_md;
@@ -105,8 +105,8 @@ const hasError = computed(() => {
     }
 
     :deep(svg.input-main__icon) {
-        width: 20px;
-        height: 20px;
+        width: $text_input_icon_size;
+        height: $text_input_icon_size;
 
         path,
         rect,
@@ -142,7 +142,7 @@ const hasError = computed(() => {
 
 .error-fade-enter-active,
 .error-fade-leave-active {
-    height: 17px;
+    height: $text_input_warn_height;
     opacity: 1;
     transform: translateY(0);
 }

@@ -157,7 +157,7 @@ const errorMessage = computed(() => {
 <style lang="scss" scoped>
 main.page-main {
     width: 100%;
-    max-width: 400px;
+    max-width: $sign_main_width;
     z-index: 10;
 
     @include flex-center(column);

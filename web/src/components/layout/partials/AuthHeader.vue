@@ -1,19 +1,18 @@
 <script lang="ts" setup>
-// Core
-
 // Components
-import Button from "@/components/core/Button.vue";
-
-// Assets
-import userIconUrl from "@/assets/icons/user.svg?url";
+import UserHeaderItem from "./UserHeaderItem.vue";
+import ThemeSwitch from "@/components/ThemeSwitch.vue";
+import Logo from "@/components/Logo.vue";
 </script>
 
 <template>
     <header class="app-header">
         <div class="app-header__content">
-            <span class="app-header__content__login">Writabble</span>
-
-            <Button :icon="userIconUrl" btn-type="no-border" size="lg" />
+            <Logo />
+            <div class="app-header__content__actions">
+                <ThemeSwitch />
+                <UserHeaderItem />
+            </div>
         </div>
     </header>
 </template>
@@ -26,25 +25,20 @@ header.app-header {
     top: 0;
     position: fixed;
 
-    height: 50px;
-    border-bottom: $spacing_1 solid $neutral_4;
+    height: $header_height;
+    border-bottom: $spacing_0 solid $neutral_4;
     backdrop-filter: blur(20px);
 
     .app-header__content {
         width: 100%;
-        max-width: 1080px;
+        max-width: $header_auth_content_width;
         @include flex(row, center, space-between);
         padding-inline: $spacing_13;
 
-        &__login {
-            font-weight: 700;
-            color: $primary_4;
-            @include gradient-text();
-        }
-
-        :deep(button) {
-            padding-block: $spacing_4;
-            padding-inline: $spacing_4;
+        .app-header__content__actions {
+            height: 100%;
+            @include flex(row, center, center);
+            gap: $spacing_8;
         }
     }
 }

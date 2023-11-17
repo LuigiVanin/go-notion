@@ -90,8 +90,8 @@ button.button-main {
         font-size: $font_3;
 
         :deep(svg.button-main__icon) {
-            width: 15px;
-            height: 15px;
+            width: $button_icon_small;
+            height: $button_icon_small;
         }
     }
 
@@ -100,8 +100,8 @@ button.button-main {
         font-size: $font_4;
 
         :deep(svg.button-main__icon) {
-            width: 17px;
-            height: 17px;
+            width: $button_icon_medium;
+            height: $button_icon_medium;
         }
     }
 
@@ -110,8 +110,8 @@ button.button-main {
         font-size: $font_5;
 
         :deep(svg.button-main__icon) {
-            width: 20px;
-            height: 20px;
+            width: $button_icon_large;
+            height: $button_icon_large;
         }
 
         &:hover {

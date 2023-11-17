@@ -11,3 +11,11 @@ export type InputProps = {
     mask?: string;
     optional?: boolean;
 };
+
+export type Action = {
+    icon?: string;
+    disabled?: boolean;
+    class?: string;
+    label: string;
+    onClick: () => void;
+};

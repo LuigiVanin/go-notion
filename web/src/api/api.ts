@@ -1,10 +1,24 @@
-import { ApiError, ApiResponse, Query } from "@/types/api";
-import { ISigninForm, SigninResponse, SignupForm } from "@/types/user";
+// Libraries
 import axios from "axios";
+
+// Helpers
+import { authStorage } from "@/helpers/storage.ts";
+
+// Types
+import { ISigninForm, SigninResponse, SignupForm } from "@/types/user.ts";
+import { ApiError, ApiResponse, Query } from "@/types/api.ts";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const axiosInstance = axios.create({
     baseURL: baseUrl,
+});
+
+axiosInstance.interceptors.request.use((config) => {
+    const token = authStorage.getItem();
+    if (token) {
+        config.headers.Authorization = `${token.jwt}`;
+    }
+    return config;
 });
 
 async function fetch<T>(

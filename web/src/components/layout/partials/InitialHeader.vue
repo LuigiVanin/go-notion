@@ -5,6 +5,7 @@ import { computed } from "vue";
 
 // Components
 import Button from "@/components/core/Button.vue";
+import Logo from "@/components/Logo.vue";
 
 // Assets
 import signIconUrl from "@/assets/icons/sign.svg?url";
@@ -46,7 +47,7 @@ const content = computed(() => {
 <template>
     <header class="app-header">
         <div class="app-header__content">
-            <span class="app-header__content__login">Writabble</span>
+            <Logo />
 
             <RouterLink :to="content?.link || ''">
                 <Button
@@ -68,19 +69,13 @@ header.app-header {
     top: 0;
     position: fixed;
 
-    height: 50px;
+    height: $header_height;
 
     .app-header__content {
         width: 100%;
-        max-width: 1080px;
+        max-width: $header_content_width;
         @include flex(row, center, space-between);
         padding-inline: $spacing_13;
-
-        &__login {
-            font-weight: 700;
-            color: $primary_4;
-            @include gradient-text();
-        }
     }
 }
 </style>

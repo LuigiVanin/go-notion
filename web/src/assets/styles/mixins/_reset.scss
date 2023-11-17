@@ -14,3 +14,8 @@
     margin: 0;
     cursor: pointer;
 }
+
+@mixin reset-list {
+    list-style: none;
+    padding: 0;
+}

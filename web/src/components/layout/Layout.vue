@@ -2,12 +2,17 @@
 // Core
 import { RouterView } from "vue-router";
 
+// Composables
+import { useTheme } from "@/composables/useTheme.ts";
+
 // Components
 import InlineSvg from "vue-inline-svg";
 import InitialHeader from "@/components/layout/partials/InitialHeader.vue";
 
 // Assets
 import gradientBackgroundUrl from "@/assets/illustration/background.svg?url";
+
+useTheme();
 </script>
 
 <template>
@@ -26,6 +31,7 @@ import gradientBackgroundUrl from "@/assets/illustration/background.svg?url";
     @include flex-center();
     height: 100vh;
     position: relative;
+    background: $neutral_1;
 
     .layout-container__background {
         position: absolute;
