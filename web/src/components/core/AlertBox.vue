@@ -1,35 +1,58 @@
 <script lang="ts" setup>
 // Core
-import { Transition } from "vue";
+import { Transition, computed, ref } from "vue";
 
 // Libraries
 import InlineSvg from "vue-inline-svg";
 
 // Assets
 import alertCircleIconUrl from "@/assets/icons/alert-circle-outline.svg?url";
+import infoCircleIconUrl from "@/assets/icons/info-circle.svg?url";
+import closeIconUrl from "@/assets/icons/close.svg?url";
+
+type AlertBoxType = "error" | "success" | "warning" | "info";
 
 type AlertBoxProps = {
     text: string;
-    type?: "error" | "success" | "warning" | "info";
+    type?: AlertBoxType;
     icon?: string;
     show?: boolean;
+    closable?: boolean;
+};
+
+const iconsLUT: Record<AlertBoxType, string> = {
+    error: alertCircleIconUrl,
+    success: alertCircleIconUrl,
+    warning: alertCircleIconUrl,
+    info: infoCircleIconUrl,
 };
 
 const props = withDefaults(defineProps<AlertBoxProps>(), {
     type: "error",
-    icon: alertCircleIconUrl,
     show: true,
+});
+
+const closedAlert = ref(false);
+
+const boxIcon = computed(() => {
+    return props.icon || iconsLUT[props.type] || alertCircleIconUrl;
 });
 </script>
 
 <template>
     <Transition name="alert-box-fade">
         <div
-            v-if="props.show"
+            v-if="props.show && !closedAlert"
             :class="['alert-box', `alert-box--${props.type}`]"
         >
-            <InlineSvg :src="props.icon" />
+            <InlineSvg :src="boxIcon" />
             <p>{{ props.text }}</p>
+            <InlineSvg
+                v-if="props.closable"
+                :src="closeIconUrl"
+                class="alert-box__close"
+                @click="closedAlert = true"
+            />
         </div>
     </Transition>
 </template>
@@ -44,6 +67,7 @@ const props = withDefaults(defineProps<AlertBoxProps>(), {
     padding: $spacing_8 $spacing_8;
     @include flex(row, center, start);
     gap: $spacing_8;
+    opacity: 1;
 
     &--error {
         --alert-soft-color: var(--red_1);
@@ -62,7 +86,7 @@ const props = withDefaults(defineProps<AlertBoxProps>(), {
 
     &--info {
         --alert-soft-color: var(--blue_1);
-        --alert-strong-color: var(--blue_6);
+        --alert-strong-color: var(--blue_5);
     }
 
     background: var(--alert-soft-color);
@@ -77,6 +101,17 @@ const props = withDefaults(defineProps<AlertBoxProps>(), {
         }
     }
 
+    :deep(svg.alert-box__close) {
+        width: 20px;
+        height: 20px;
+        margin-left: auto;
+
+        &:hover {
+            cursor: pointer;
+            opacity: 0.8;
+        }
+    }
+
     p {
         color: var(--alert-strong-color);
         font-size: $font_3;
@@ -88,10 +123,10 @@ const props = withDefaults(defineProps<AlertBoxProps>(), {
 .alert-box-fade-enter-active,
 .alert-box-fade-leave-active {
     transition: all 0.1s $transition_spring;
-    height: 47px;
 }
 
-.alert-box-fade-enter-from {
+.alert-box-fade-enter-from,
+.alert-box-fade-leave-to {
     opacity: 0;
     height: 0px;
 }

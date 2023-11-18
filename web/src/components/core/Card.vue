@@ -38,31 +38,4 @@ const props = defineProps<CardProps>();
         animation: bar-loading 2.5s infinite $transition_spring;
     }
 }
-
-@keyframes bar-loading {
-    0% {
-        left: 0px;
-        width: 10%;
-    }
-
-    15% {
-        left: 0px;
-        width: 100%;
-    }
-
-    50% {
-        left: 90%;
-        width: 10%;
-    }
-
-    75% {
-        left: 0%;
-        width: 100%;
-    }
-
-    100% {
-        left: 0px;
-        width: 10%;
-    }
-}
 </style>

@@ -30,6 +30,11 @@ const routes: RouteRecordRaw[] = [
                 name: "Home",
                 component: () => import("@/views/Home.vue"),
             },
+            {
+                path: "/document/:id",
+                name: "Document",
+                component: () => import("@/views/Document.vue"),
+            },
         ],
     },
 ];

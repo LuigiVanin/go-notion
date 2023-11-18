@@ -5,8 +5,9 @@ import axios from "axios";
 import { authStorage } from "@/helpers/storage.ts";
 
 // Types
-import { ISigninForm, SigninResponse, SignupForm } from "@/types/user.ts";
+import { ISigninForm, SigninResponse, SignupForm, User } from "@/types/user.ts";
 import { ApiError, ApiResponse, Query } from "@/types/api.ts";
+import { CreateDocument } from "@/types/document";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const axiosInstance = axios.create({
@@ -61,18 +62,20 @@ const registerFetchStrategy =
     (query?: Query) =>
         fetch<T>(basePath, query);
 
-interface IUser {}
-
 export class Api {
     auth = {
         signin: registerCreateStrategy<ISigninForm, SigninResponse>(
             "/auth/signin"
         ),
-        signup: registerCreateStrategy<SignupForm, SigninResponse>(
-            "/auth/signup"
-        ),
+        signup: registerCreateStrategy<SignupForm, void>("/auth/signup"),
     };
     user = {
-        fetch: registerFetchStrategy<IUser>("/user"),
+        fetch: registerFetchStrategy<User>("/user"),
+    };
+    document = {
+        fetch: registerFetchStrategy<{ docs: Document[] }>("/document"),
+        create: registerCreateStrategy<CreateDocument, { id: number }>(
+            "/document"
+        ),
     };
 }

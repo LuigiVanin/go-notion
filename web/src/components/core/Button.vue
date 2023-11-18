@@ -9,6 +9,7 @@ type ButtonsProps = {
     color?: "primary" | "blue" | "orange";
     size?: "sm" | "md" | "lg";
     icon?: string;
+    disabled?: boolean;
 
     suffixIcon?: string;
 };
@@ -36,6 +37,7 @@ const handleClick = () => {
             `button-main--size-${props.size || 'md'}`,
             `button-main--${activeButton ? 'active' : ''}`,
         ]"
+        :disabled="props.disabled"
         @click="handleClick"
     >
         <span>
@@ -176,6 +178,15 @@ button.button-main {
             border: 1px solid transparent;
             color: var(--button-color-strong);
         }
+    }
+
+    &:disabled,
+    &:hover:disabled {
+        --button-color-strong: var(--neutral_6);
+        --button-color-medium: var(--neutral_5);
+        --button-color-soft: var(--neutral_2);
+
+        cursor: not-allowed !important;
     }
 }
 </style>

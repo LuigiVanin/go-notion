@@ -21,7 +21,11 @@ export const useUserStore = defineStore({
     getters: {},
     actions: {
         setUser(user: User) {
+            console.log("AQUIIII");
+
             this.user = user;
+
+            console.log("THIS.USER", this.user);
 
             userStorage.setItem(user);
         },
