@@ -8,6 +8,8 @@ import InlineSvg from "vue-inline-svg";
 
 // Composables
 import { useApi } from "@/composables/api/useApi.ts";
+import { useFetchDocuments } from "@/composables/api/useFetchDocuments.ts";
+
 // Components
 import CreateDocumentButton from "@/components/CreateDocumentButton.vue";
 import AlertBox from "@/components/core/AlertBox.vue";
@@ -17,27 +19,24 @@ import paperIconUrl from "@/assets/icons/paper.svg?url";
 
 const api = useApi();
 const router = useRouter();
+const { documents, fetchDocuments, fetchError } = useFetchDocuments();
 
 const documentLoading = ref(false);
-const documents = ref<Document[]>([]);
 
 onMounted(async () => {
-    const { data, error } = await api.document.fetch();
-    if (error || !data) {
-        console.log(error);
+    await fetchDocuments();
+    if (fetchError.value || !fetchError.value) {
+        console.log(fetchError.value);
         return;
     }
-    console.log(data);
-
-    documents.value = data.docs;
+    console.log(documents.value);
 });
 
 const createDocument = async () => {
-    console.log("Create Document");
     documentLoading.value = true;
     const { data, error } = await api.document.create({
         title: "Teste",
-        text: "\n\n\n",
+        text: "\n",
         status: "draft",
     });
     documentLoading.value = false;
@@ -70,7 +69,13 @@ const createDocument = async () => {
             text="Lembrando que você possui o direito de apenas 10 documentos por conta."
             closable
         />
-        <p>USER: {{ documents }}</p>
+        <p>Documents:</p>
+        <ul v-if="documents">
+            <li v-for="doc in documents?.docs" :key="doc.id">
+                {{ doc.title }} - {{ doc.text }} -
+                <RouterLink :to="`/document/${doc.id}`">link</RouterLink>
+            </li>
+        </ul>
     </div>
 </template>
 

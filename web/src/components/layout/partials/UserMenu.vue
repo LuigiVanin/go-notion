@@ -35,6 +35,7 @@ const actionList: Action[] = [
         label: "Home",
         onClick: () => {
             console.log("Logout");
+            router.push("/home");
         },
     },
     {

@@ -7,7 +7,7 @@ import { authStorage } from "@/helpers/storage.ts";
 // Types
 import { ISigninForm, SigninResponse, SignupForm, User } from "@/types/user.ts";
 import { ApiError, ApiResponse, Query } from "@/types/api.ts";
-import { CreateDocument } from "@/types/document";
+import { CreateDocument, Document } from "@/types/document";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const axiosInstance = axios.create({
@@ -52,30 +52,54 @@ async function create<T, R>(
     }
 }
 
+async function update<T, R>(
+    basePath: string,
+    body?: T
+): Promise<ApiResponse<R>> {
+    try {
+        const res = await axiosInstance.patch(basePath, body);
+        return { data: res.data, error: null };
+    } catch (err) {
+        return { data: null, error: err as ApiError };
+    }
+}
+
 const registerCreateStrategy =
-    <T, R>(basePath: string) =>
+    <T, R = void>(basePath: string) =>
     (body?: T) =>
         create<T, R>(basePath, body);
+
+const registerPatchParamStrategy =
+    <T, R = void>(basePath: string) =>
+    (param: number | string, body?: T) =>
+        update<T, R>(`${basePath}/${param}`, body);
 
 const registerFetchStrategy =
     <T>(basePath: string) =>
     (query?: Query) =>
         fetch<T>(basePath, query);
 
+const registerFetchParamStrategy =
+    <T>(basePath: string) =>
+    (param: number | string, query?: Query) =>
+        fetch<T>(`${basePath}/${param}`, query);
+
 export class Api {
     auth = {
         signin: registerCreateStrategy<ISigninForm, SigninResponse>(
             "/auth/signin"
         ),
-        signup: registerCreateStrategy<SignupForm, void>("/auth/signup"),
+        signup: registerCreateStrategy<SignupForm>("/auth/signup"),
     };
     user = {
         fetch: registerFetchStrategy<User>("/user"),
     };
     document = {
         fetch: registerFetchStrategy<{ docs: Document[] }>("/document"),
+        fetchOne: registerFetchParamStrategy<Document>("/document"),
         create: registerCreateStrategy<CreateDocument, { id: number }>(
             "/document"
         ),
+        update: registerPatchParamStrategy<CreateDocument>("/document"),
     };
 }
