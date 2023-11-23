@@ -3,9 +3,22 @@ import Popper from "vue3-popper";
 </script>
 
 <template>
-    <Popper content="Teste">
-        <div class="input-main">
+    <div class="input-main">
+        <Popper content="Teste">
             <p>Rascunho</p>
-        </div>
-    </Popper>
+        </Popper>
+    </div>
 </template>
+
+<style lang="scss" scoped>
+.input-main {
+    :deep(.inline-block) {
+        width: 100%;
+        margin: 0px !important;
+        border: none !important;
+        min-width: 120px;
+
+        @include flex-center(row);
+    }
+}
+</style>

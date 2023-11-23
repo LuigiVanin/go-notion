@@ -23,7 +23,7 @@ export const useSignup = () => {
     const { action, data, error, loading } = useAsync(signup, false);
 
     return {
-        signup: action as (payload: SignupForm) => Promise<void>,
+        signup: action as typeof signup,
         data,
         signupError: error as Ref<null | ApiError>,
         signupLoading: loading,

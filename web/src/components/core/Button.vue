@@ -5,7 +5,7 @@ import InlineSvg from "vue-inline-svg";
 
 type ButtonsProps = {
     text?: string;
-    btnType?: "soft" | "no-border" | "filled" | "outlined";
+    btnType?: "soft" | "no-border" | "filled" | "outlined" | "simple";
     color?: "primary" | "blue" | "orange";
     size?: "sm" | "md" | "lg";
     icon?: string;
@@ -110,6 +110,7 @@ button.button-main {
     &--size-lg {
         padding: $spacing_6 $spacing_13;
         font-size: $font_5;
+        border-radius: $border_r_mdx;
 
         :deep(svg.button-main__icon) {
             width: $button_icon_large;
@@ -117,7 +118,7 @@ button.button-main {
         }
 
         &:hover {
-            font-weight: 500;
+            // font-weight: 500;
         }
 
         span {
@@ -177,6 +178,18 @@ button.button-main {
             text-decoration: underline;
             border: 1px solid transparent;
             color: var(--button-color-strong);
+        }
+    }
+
+    &--simple {
+        background-color: transparent;
+        border: 1px solid $neutral_6;
+        color: $neutral_9;
+
+        &:hover {
+            background-color: $neutral_3;
+            border: 1px solid $neutral_6;
+            color: $neutral_12;
         }
     }
 

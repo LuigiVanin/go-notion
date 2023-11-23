@@ -20,10 +20,10 @@ const props = defineProps<EditorButtonIconProps>();
 button {
     @include reset-button;
     @include flex-center;
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
 
-    border-radius: $border_r_md;
+    border-radius: $border_r_mdx;
     border: 1px solid $neutral_5;
     transition: all 0.2s ease-in-out;
 

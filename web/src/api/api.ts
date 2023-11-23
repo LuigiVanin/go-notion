@@ -100,6 +100,8 @@ export class Api {
         create: registerCreateStrategy<CreateDocument, { id: number }>(
             "/document"
         ),
-        update: registerPatchParamStrategy<CreateDocument>("/document"),
+        update: registerPatchParamStrategy<Partial<CreateDocument>>(
+            "/document"
+        ),
     };
 }
