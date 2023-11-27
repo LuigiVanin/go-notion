@@ -13,6 +13,7 @@ import { useFetchDocuments } from "@/composables/api/useFetchDocuments.ts";
 // Components
 import CreateDocumentButton from "@/components/CreateDocumentButton.vue";
 import AlertBox from "@/components/core/AlertBox.vue";
+import DocumentTable from "@/components/DocumentTable.vue";
 
 // Assets
 import paperIconUrl from "@/assets/icons/paper.svg?url";
@@ -69,13 +70,8 @@ const createDocument = async () => {
             text="Lembrando que você possui o direito de apenas 10 documentos por conta."
             closable
         />
-        <p>Documents:</p>
-        <ul v-if="documents">
-            <li v-for="doc in documents?.docs" :key="doc.id">
-                {{ doc.title }} - {{ doc.text }} -
-                <RouterLink :to="`/document/${doc.id}`">link</RouterLink>
-            </li>
-        </ul>
+        <h3>Documentos:</h3>
+        <DocumentTable v-if="documents?.docs" :documents="documents.docs" />
     </div>
 </template>
 
@@ -84,6 +80,13 @@ const createDocument = async () => {
     width: 100%;
     @include flex(column, start, start);
     gap: $spacing_20;
+
+    > h3 {
+        padding-top: $spacing_6;
+        font-size: $font_7;
+        color: $neutral_8;
+        font-weight: 600;
+    }
 
     header.home__title {
         width: 100%;

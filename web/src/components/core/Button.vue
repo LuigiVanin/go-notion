@@ -6,9 +6,10 @@ import InlineSvg from "vue-inline-svg";
 type ButtonsProps = {
     text?: string;
     btnType?: "soft" | "no-border" | "filled" | "outlined" | "simple";
-    color?: "primary" | "blue" | "orange";
+    color?: "primary" | "blue" | "orange" | "red";
     size?: "sm" | "md" | "lg";
     icon?: string;
+    loading?: boolean;
     disabled?: boolean;
 
     suffixIcon?: string;
@@ -130,6 +131,18 @@ button.button-main {
         --button-color-strong: var(--primary_6);
         --button-color-medium: var(--primary_5);
         --button-color-soft: var(--primary_2);
+    }
+
+    &--color-blue {
+        --button-color-strong: var(--blue_6);
+        --button-color-medium: var(--blue_5);
+        --button-color-soft: var(--blue_2);
+    }
+
+    &--color-red {
+        --button-color-strong: var(--red_6);
+        --button-color-medium: var(--red_5);
+        --button-color-soft: var(--red_2);
     }
 
     &--filled {

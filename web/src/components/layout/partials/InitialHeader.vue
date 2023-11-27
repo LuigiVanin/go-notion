@@ -6,6 +6,7 @@ import { computed } from "vue";
 // Components
 import Button from "@/components/core/Button.vue";
 import Logo from "@/components/Logo.vue";
+import ThemeSwitch from "@/components/ThemeSwitch.vue";
 
 // Assets
 import signIconUrl from "@/assets/icons/sign.svg?url";
@@ -49,14 +50,17 @@ const content = computed(() => {
         <div class="app-header__content">
             <Logo />
 
-            <RouterLink :to="content?.link || ''">
-                <Button
-                    :icon="content?.icon"
-                    :text="content?.buttonText"
-                    btn-type="outlined"
-                    size="md"
-                />
-            </RouterLink>
+            <div class="app-header__content__right">
+                <ThemeSwitch />
+                <RouterLink :to="content?.link || ''">
+                    <Button
+                        :icon="content?.icon"
+                        :text="content?.buttonText"
+                        btn-type="outlined"
+                        size="md"
+                    />
+                </RouterLink>
+            </div>
         </div>
     </header>
 </template>
@@ -76,6 +80,11 @@ header.app-header {
         max-width: $header_content_width;
         @include flex(row, center, space-between);
         padding-inline: $spacing_13;
+
+        .app-header__content__right {
+            @include flex(row, center, center);
+            gap: $spacing_16;
+        }
     }
 }
 </style>

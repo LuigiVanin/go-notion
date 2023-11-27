@@ -1,14 +1,16 @@
+export type DocumentStatus = "completed" | "draft" | "rejected" | "review";
+
 export type CreateDocument = {
     title: string;
     text: string;
-    status: "completed" | "draft" | "rejected" | "review";
+    status: DocumentStatus;
 };
 
 export type Document = {
     id: number;
     title: string;
     text: string;
-    status: "completed" | "draft" | "rejected" | "review";
+    status: DocumentStatus;
     createdAt: string;
     updatedAt: string;
 };

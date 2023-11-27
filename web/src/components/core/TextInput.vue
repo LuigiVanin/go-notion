@@ -79,12 +79,12 @@ const hasError = computed(() => {
     @include flex-center;
     width: 100%;
     height: $text_input_height;
-    border: $spacing_0 solid $neutral_6;
     padding: $spacing_6 $spacing_6;
     border-radius: $border_r_md;
     gap: $spacing_4;
     transition: $transition;
     font-family: "Poppins", sans-serif;
+    border: $spacing_0 solid $neutral_6;
     background: $neutral_2;
 
     &:hover {
