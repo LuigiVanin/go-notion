@@ -9,28 +9,28 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func CreateDocument(userId uint, data *dto.CreateDocument) error {
-	document := &models.Document{}
-	queryRes := conn.
-		Database.
-		Where(&models.Document{UserId: userId, Title: data.Title}).
-		First(document)
-
-	if queryRes.Error == nil {
-		return &fiber.Error{
-			Code:    fiber.ErrConflict.Code,
-			Message: "Document with title already exists",
-		}
-	}
-
-	res := conn.Database.Create(&models.Document{
+func CreateDocument(userId uint, data *dto.CreateDocument) (uint, error) {
+	document := &models.Document{
 		UserId: userId,
 		Title:  data.Title,
 		Text:   data.Text,
 		Status: data.Status,
-	})
+	}
+	// queryRes := conn.
+	// 	Database.
+	// 	Where(&models.Document{UserId: userId, Title: data.Title}).
+	// 	First(document)
 
-	return res.Error
+	// if queryRes.Error == nil {
+	// 	return &fiber.Error{
+	// 		Code:    fiber.ErrConflict.Code,
+	// 		Message: "Document with title already exists",
+	// 	}
+	// }
+
+	res := conn.Database.Create(document)
+
+	return document.ID, res.Error
 }
 
 func FetchDocumentList(
@@ -137,4 +137,32 @@ func UpdateDocumentById(
 		})
 
 	return document, res.Error
+}
+
+func DeleteDocumentById(id string, userId uint) error {
+	idUint, err := strconv.Atoi(id)
+	if err != nil {
+		return &fiber.Error{
+			Code:    fiber.ErrBadRequest.Code,
+			Message: err.Error(),
+		}
+	}
+	query := &models.Document{
+		Base: models.Base{
+			ID: uint(idUint),
+		},
+	}
+	document := &models.Document{}
+	conn.Database.Where(query).First(document)
+
+	if document.UserId != userId {
+		return &fiber.Error{
+			Code:    fiber.ErrForbidden.Code,
+			Message: "Forbidden access",
+		}
+	}
+
+	conn.Database.Where(query).Delete(&models.Document{})
+
+	return nil
 }

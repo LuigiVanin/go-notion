@@ -20,13 +20,15 @@ func CreateDocument(ctx *fiber.Ctx) error {
 	}
 
 	data := ctx.Locals("json").(*dto.CreateDocument)
-	err := services.CreateDocument(auth.ID, data)
+	id, err := services.CreateDocument(auth.ID, data)
 
 	if err != nil {
 		return err
 	}
 
-	return ctx.Status(fiber.StatusCreated).JSON(data)
+	return ctx.Status(fiber.StatusCreated).JSON(&fiber.Map{
+		"id": id,
+	})
 }
 
 func FetchDocuments(ctx *fiber.Ctx) error {
@@ -115,5 +117,33 @@ func UpdateDocument(ctx *fiber.Ctx) error {
 			Status(fiber.StatusCreated).
 			JSON(document)
 
+	}
+}
+
+func DeleteDocument(ctx *fiber.Ctx) error {
+	auth := ctx.Locals("auth").(*models.User)
+
+	if auth == nil {
+		return &fiber.Error{
+			Code:    fiber.ErrForbidden.Code,
+			Message: "Forbidden access",
+		}
+	}
+
+	docId := ctx.Params("id")
+
+	if docId == "" {
+		return &fiber.Error{
+			Code:    fiber.ErrBadRequest.Code,
+			Message: "Document id is required",
+		}
+	}
+
+	if err := services.DeleteDocumentById(docId, auth.ID); err != nil {
+		return err
+	} else {
+		return ctx.
+			Status(fiber.StatusNoContent).
+			Send(nil)
 	}
 }

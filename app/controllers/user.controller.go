@@ -20,11 +20,11 @@ func FetchUser(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-		"Email":     auth.Email,
-		"ID":        auth.ID,
-		"Name":      auth.Name,
-		"CreatedAt": auth.CreatedAt,
-		"UpdatedAt": auth.UpdatedAt,
+		"email":     auth.Email,
+		"id":        auth.ID,
+		"name":      auth.Name,
+		"createdAt": auth.CreatedAt,
+		"updatedAt": auth.UpdatedAt,
 	})
 }
 
