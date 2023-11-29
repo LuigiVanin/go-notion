@@ -21,12 +21,7 @@ export const useUserStore = defineStore({
     getters: {},
     actions: {
         setUser(user: User) {
-            console.log("AQUIIII");
-
             this.user = user;
-
-            console.log("THIS.USER", this.user);
-
             userStorage.setItem(user);
         },
         setToken(token: string) {
@@ -34,7 +29,6 @@ export const useUserStore = defineStore({
             authStorage.setItem({ jwt: token });
         },
         setAuth(auth: { user: User; token: string }) {
-            console.log("SET AUTH");
             this.setUser(auth.user);
             this.setToken(auth.token);
         },

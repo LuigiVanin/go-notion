@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 // Core
-import { ShallowRef, computed, inject, onMounted } from "vue";
+import { ShallowRef, computed, inject } from "vue";
 
 // Services & Helpers
 import { actions } from "@/helpers/actions.ts";
@@ -18,10 +18,6 @@ type EditorActionsProps = {
 };
 
 const props = defineProps<EditorActionsProps>();
-
-onMounted(() => {
-    console.log("EDITOR: ", injected);
-});
 
 const filteredActions = computed(() => {
     if (props.actions) {

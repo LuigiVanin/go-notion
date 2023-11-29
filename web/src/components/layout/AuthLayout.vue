@@ -20,7 +20,6 @@ onMounted(async () => {
         router.push("/");
         return;
     }
-    console.log("USER: ", data);
     userStore.setUser(data);
 });
 </script>

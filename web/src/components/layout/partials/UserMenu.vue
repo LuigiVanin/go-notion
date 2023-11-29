@@ -34,7 +34,6 @@ const actionList: Action[] = [
         icon: paperIconUrl,
         label: "Home",
         onClick: () => {
-            console.log("Logout");
             router.push("/home");
         },
     },
@@ -42,17 +41,13 @@ const actionList: Action[] = [
         icon: githubIconUrl,
         label: "Repositório",
         class: "user-menu__icon--github",
-        onClick: () => {
-            console.log("Logout");
-        },
+        onClick: () => {},
     },
     {
         icon: userIconUrl,
         label: "Usuário",
         disabled: true,
-        onClick: () => {
-            console.log("Logout");
-        },
+        onClick: () => {},
     },
 ];
 

@@ -1,3 +1,6 @@
+// Types
+import { Editor } from "@tiptap/vue-3";
+
 // Assets
 import boldIconUrl from "@/assets/icons/bold.svg?url";
 import italicIconUrl from "@/assets/icons/italic.svg?url";
@@ -19,8 +22,6 @@ export const actions = [
     {
         icon: undoIconUrl,
         action: (editor?: Editor) => {
-            console.log(injected?.editor.value);
-            console.log("EDITOR: ", editor);
             editor && editor.commands.undo();
         },
         label: "Undo",

@@ -16,7 +16,6 @@ export default Extension.create({
             suggestion: {
                 char: "/",
                 command: ({ editor, range, props }: CommandProps) => {
-                    console.log("command!!", props);
                     editor.commands.deleteRange(range);
                     props?.action && props.action(editor);
                 },

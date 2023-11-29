@@ -27,10 +27,8 @@ const documentLoading = ref(false);
 onMounted(async () => {
     await fetchDocuments();
     if (fetchError.value || !fetchError.value) {
-        console.log(fetchError.value);
         return;
     }
-    console.log(documents.value);
 });
 
 const createDocument = async () => {
@@ -48,8 +46,6 @@ const createDocument = async () => {
     }
 
     router.push(`/document/${data.id}`);
-
-    console.log(data);
 };
 </script>
 

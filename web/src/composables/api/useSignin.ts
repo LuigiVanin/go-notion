@@ -22,7 +22,6 @@ export const useSignin = () => {
             throw error;
         }
         if (data) {
-            console.log("SETTING UP ON THE RIGHT PLCE");
             userStore.setAuth({
                 user: data.user,
                 token: data.token,
