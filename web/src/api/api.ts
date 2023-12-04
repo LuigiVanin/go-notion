@@ -64,6 +64,15 @@ async function update<T, R>(
     }
 }
 
+async function remove<R>(basePath: string): Promise<ApiResponse<R>> {
+    try {
+        const res = await axiosInstance.delete(basePath);
+        return { data: res.data, error: null };
+    } catch (err) {
+        return { data: null, error: err as ApiError };
+    }
+}
+
 const registerCreateStrategy =
     <T, R = void>(basePath: string) =>
     (body?: T) =>
@@ -73,6 +82,11 @@ const registerPatchParamStrategy =
     <T, R = void>(basePath: string) =>
     (param: number | string, body?: T) =>
         update<T, R>(`${basePath}/${param}`, body);
+
+const registerDeleteParamStrategy =
+    <R = void>(basePath: string) =>
+    (param: number | string) =>
+        remove<R>(`${basePath}/${param}`);
 
 const registerFetchStrategy =
     <T>(basePath: string) =>
@@ -103,5 +117,6 @@ export class Api {
         update: registerPatchParamStrategy<Partial<CreateDocument>>(
             "/document"
         ),
+        delete: registerDeleteParamStrategy("/document"),
     };
 }

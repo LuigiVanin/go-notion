@@ -1,7 +1,12 @@
 <script lang="ts" setup>
-// Libraries
+// Core
 import { ref } from "vue";
+
+// Libraries
 import InlineSvg from "vue-inline-svg";
+
+// Assets
+import loadingIconUrl from "@/assets/icons/loading.svg?url";
 
 type ButtonsProps = {
     text?: string;
@@ -37,8 +42,9 @@ const handleClick = () => {
             `button-main--color-${props.color || 'primary'}`,
             `button-main--size-${props.size || 'md'}`,
             `button-main--${activeButton ? 'active' : ''}`,
+            props.loading && 'button-main--loading',
         ]"
-        :disabled="props.disabled"
+        :disabled="props.disabled || props.loading"
         @click="handleClick"
     >
         <span>
@@ -55,6 +61,9 @@ const handleClick = () => {
                 :src="props.suffixIcon"
                 class="button-main__icon"
             />
+        </span>
+        <span v-if="props.loading" class="button-main__loading">
+            <InlineSvg :src="loadingIconUrl" class="button-main__icon" />
         </span>
     </button>
 </template>
@@ -203,6 +212,25 @@ button.button-main {
             background-color: $neutral_3;
             border: 1px solid $neutral_6;
             color: $neutral_12;
+        }
+    }
+
+    &--loading {
+        position: relative;
+
+        > span:not(.button-main__loading) {
+            opacity: 0;
+        }
+
+        > span.button-main__loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+            :deep(svg) {
+                animation: spin 1.5s linear infinite;
+            }
         }
     }
 

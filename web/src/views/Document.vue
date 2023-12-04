@@ -28,7 +28,7 @@ const route = useRoute();
 const router = useRouter();
 
 const { editor } = useWrittableEditor({
-    onBlur: ({ editor }) => {
+    onBlur: () => {
         saveDocument();
     },
 });

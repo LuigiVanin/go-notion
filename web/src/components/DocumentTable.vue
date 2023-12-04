@@ -4,32 +4,61 @@ import { useRouter } from "vue-router";
 
 // Libraries
 import InlineSvg from "vue-inline-svg";
-import Popper from "vue3-popper";
 
 // Copmposables
 import { useUpdateDocument } from "@/composables/api/useUpdateDocument.ts";
+import { useApi } from "@/composables/api/useApi.ts";
 
 // Components
 import StatusSelect from "./editor/StatusSelect.vue";
 import Button from "./core/Button.vue";
+import Modal from "./core/Modal.vue";
+import DocumentOptions from "./DocumentOptions.vue";
 
 // Assets
-import paperIconUrl from "@/assets/icons/paper.svg?url";
-import threeDotsIconUrl from "@/assets/icons/three-dots.svg?url";
 import trashIconUrl from "@/assets/icons/trash.svg?url";
+import paperIconUrl from "@/assets/icons/paper.svg?url";
 
 // Types
 import { Document } from "@/types/document";
+import { computed, ref } from "vue";
+import { useToast } from "vue-toastification";
 
 type DocumentTableProps = {
     documents: Document[];
 };
 
 const props = defineProps<DocumentTableProps>();
+const emit = defineEmits(["delete-document"]);
 
 const router = useRouter();
 
 const { updateDocument } = useUpdateDocument();
+const toast = useToast();
+const api = useApi();
+
+const documentToDeleteId = ref<number | null>(null);
+const deleteDocumentLoading = ref(false);
+
+const deleteDocument = async (id: number) => {
+    deleteDocumentLoading.value = true;
+    const { error } = await api.document.delete(id);
+    deleteDocumentLoading.value = false;
+
+    if (!error) {
+        emit("delete-document", documentToDeleteId.value);
+        documentToDeleteId.value = null;
+        console.log(id);
+        return;
+    }
+
+    documentToDeleteId.value = null;
+    toast.error("Erro ao deletar documento");
+};
+
+const disableModalAction = () => {
+    documentToDeleteId.value = null;
+};
 
 const formatDateString = (date: string) => {
     const dateObj = new Date(date);
@@ -37,6 +66,10 @@ const formatDateString = (date: string) => {
         dateObj.getMonth() + 1
     }/${dateObj.getFullYear()}`;
 };
+
+const documentToDelete = computed(() => {
+    return props.documents.find((doc) => doc.id === documentToDeleteId.value);
+});
 </script>
 
 <template>
@@ -77,44 +110,52 @@ const formatDateString = (date: string) => {
                     {{ formatDateString(document.createdAt) }}
                 </div>
                 <div class="document-table__cell" @click.stop>
-                    <Popper placement="bottom-end">
-                        <Button :icon="threeDotsIconUrl" />
-
-                        <template #content>
-                            <div class="document-table__cell__popper">
-                                <p class="title">Info</p>
-                                <p>
-                                    Quantidade palavras:
-                                    <span>
-                                        {{
-                                            document.text.split(/[ \n]+/).length
-                                        }}
-                                    </span>
-                                </p>
-
-                                <div class="button-group">
-                                    <Button
-                                        @click="
-                                            router.push(
-                                                `/document/${document.id}`
-                                            )
-                                        "
-                                    >
-                                        Editar
-                                    </Button>
-                                    <Button
-                                        :icon="trashIconUrl"
-                                        color="red"
-                                        btn-type="soft"
-                                    />
-                                </div>
-                            </div>
-                        </template>
-                    </Popper>
+                    <DocumentOptions
+                        :document="document"
+                        @edit-document="router.push(`/document/${document.id}`)"
+                        @delete-document="documentToDeleteId = document.id"
+                    />
                 </div>
             </div>
         </main>
     </div>
+    <Modal
+        :show="!!documentToDeleteId"
+        :disable-action="disableModalAction"
+        :appearence="{
+            enableGradient: false,
+            disableBorder: true,
+        }"
+    >
+        <main class="modal__main">
+            <h1>Deseja Deletar seu Documento?</h1>
+            <p>
+                Caso deseje deletar o documento
+                <strong> "{{ documentToDelete?.title }}" </strong>
+                clique em "Deletar", caso contrário clique em "Cancelar" ou em
+                fora do modal?
+            </p>
+            <div class="btn-group">
+                <Button
+                    :loading="deleteDocumentLoading"
+                    :icon="trashIconUrl"
+                    btn-type="outlined"
+                    text="Deletar"
+                    size="lg"
+                    color="red"
+                    @click="
+                        documentToDeleteId && deleteDocument(documentToDeleteId)
+                    "
+                />
+                <Button
+                    btn-type="no-border"
+                    text="Cancelar"
+                    size="lg"
+                    @click="disableModalAction"
+                />
+            </div>
+        </main>
+    </Modal>
 </template>
 
 <style lang="scss" scoped>
@@ -134,7 +175,8 @@ const formatDateString = (date: string) => {
         min-width: 600px;
 
         background: $neutral_4;
-        border-radius: $border_r_lg;
+        border-radius: $border_r_md $border_r_sm 0 0;
+        border-bottom: $spacing_2 solid $neutral_5;
 
         .document-table__cell {
             padding-block: $spacing_13;
@@ -164,7 +206,7 @@ const formatDateString = (date: string) => {
 
             // padding: $spacing_6 $spacing_6;
             width: 100%;
-            box-shadow: 0px 0px 4px -1px $neutral_7;
+            box-shadow: 0px 0px 15px -1px $neutral_7;
             padding: $spacing_10 $spacing_10;
             @include flex(column, start, start);
             gap: $spacing_6;
@@ -239,9 +281,46 @@ const formatDateString = (date: string) => {
 
                 .inline-block {
                     min-width: 100px !important;
-                    //         width: 100px !important;
                 }
             }
+        }
+    }
+}
+
+main.modal__main {
+    @include flex(column, start, start);
+    gap: $spacing_10;
+
+    p {
+        font-size: $font_4;
+        color: $neutral_8;
+        font-weight: 400;
+        line-height: 1.25rem;
+        text-align: center;
+
+        strong {
+            font-weight: 600;
+            color: $neutral_10;
+        }
+    }
+
+    h1 {
+        color: $primary_5;
+        text-align: center;
+        font-size: $font_7;
+        font-weight: 600;
+        width: 100%;
+        margin-bottom: $spacing_4;
+    }
+
+    .btn-group {
+        width: 100%;
+        @include flex(row, center, start);
+        gap: $spacing_6;
+        margin-top: $spacing_8;
+
+        :deep(button.button-main--soft) {
+            padding: $spacing_5 $spacing_5;
         }
     }
 }

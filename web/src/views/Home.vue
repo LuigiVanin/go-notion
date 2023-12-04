@@ -47,6 +47,15 @@ const createDocument = async () => {
 
     router.push(`/document/${data.id}`);
 };
+
+const handleDocumentDeleted = (id: number) => {
+    if (!documents.value?.docs) {
+        console.log("Error");
+
+        return;
+    }
+    documents.value.docs = documents.value?.docs.filter((doc) => doc.id !== id);
+};
 </script>
 
 <template>
@@ -67,7 +76,11 @@ const createDocument = async () => {
             closable
         />
         <h3>Documentos:</h3>
-        <DocumentTable v-if="documents?.docs" :documents="documents.docs" />
+        <DocumentTable
+            v-if="documents?.docs"
+            :documents="documents.docs"
+            @delete-document="handleDocumentDeleted"
+        />
     </div>
 </template>
 
