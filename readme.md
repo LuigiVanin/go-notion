@@ -3,15 +3,15 @@
 ## Run With Docker 🐋
 
 ```bash
-> docker build -t go-notion
-> docker run go-notion
+> docker build -t go-writable
+> docker run -p 3000:3000 go-writable
 ```
 
 ## Todo ✅
 
 - [] Use swagger on dev mode
-- [] Create simple front end
+- [x] Create simple front end
 - [x] Create custom error response
-- [] Add delete route
+- [x] Add delete route
 - [] Create condition on create document(max: 10 documentos)
  

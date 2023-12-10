@@ -162,12 +162,10 @@ const documentToDelete = computed(() => {
 .document-table {
     width: 100%;
     @include flex(column, start, start);
-    overflow-x: auto;
 
     main {
         width: 100%;
         min-width: 600px;
-        overflow-x: auto;
     }
 
     header {

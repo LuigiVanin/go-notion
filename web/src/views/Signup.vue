@@ -26,10 +26,10 @@ import keypadIconUrl from "@/assets/icons/keypad-outline.svg?url";
 import userIconUrl from "@/assets/icons/user.svg?url";
 
 const signupForm = reactive({
-    name: "Luis",
-    email: "luisfvanin9com",
-    password: "senha123",
-    passwordConfirm: "senha123",
+    name: "",
+    email: "",
+    password: "",
+    passwordConfirm: "",
 });
 const phone = ref("");
 

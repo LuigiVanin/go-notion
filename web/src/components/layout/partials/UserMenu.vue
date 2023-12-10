@@ -41,7 +41,9 @@ const actionList: Action[] = [
         icon: githubIconUrl,
         label: "Repositório",
         class: "user-menu__icon--github",
-        onClick: () => {},
+        onClick: () => {
+            window.open("https://github.com/LuigiVanin/go-notion", "_blank");
+        },
     },
     {
         icon: userIconUrl,

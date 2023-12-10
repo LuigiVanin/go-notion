@@ -29,8 +29,8 @@ const loginFormRule = z.object({
 });
 
 const loginForm = reactive({
-    email: "luisfvanin9com",
-    password: "senha123",
+    email: "",
+    password: "",
 });
 
 const router = useRouter();
