@@ -14,6 +14,7 @@ func Setup(router *fiber.App) {
 	}))
 	router.Use(middleware.Json)
 	router.Use(middleware.Logger())
+
 	router.Get("/", func(ctx *fiber.Ctx) error {
 		return ctx.JSON(fiber.Map{
 			"message": "Server is Running!",
@@ -23,7 +24,6 @@ func Setup(router *fiber.App) {
 	addAuthRoutes(router)
 	addUserRoutes(router)
 	addDocumentRoutes(router)
-	// addSwaggerRoutes(router)
 
 	fmt.Println("\nRoutes:")
 	for _, route := range router.GetRoutes() {

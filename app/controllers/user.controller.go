@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"main/common/dto"
 	"main/models"
 	"main/services"
@@ -48,8 +47,6 @@ func UpdateUser(ctx *fiber.Ctx) error {
 			Message: "User update failed",
 		}
 	}
-
-	fmt.Println(updatedUser)
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "User updated successfully",

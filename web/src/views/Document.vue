@@ -7,7 +7,7 @@ import { useRoute, useRouter } from "vue-router";
 import { BubbleMenu, EditorContent } from "@tiptap/vue-3";
 
 // Composables
-import { useWrittableEditor } from "@/composables/editor/useWrittableEditor.ts";
+import { useWritableEditor } from "@/composables/editor/useWritableEditor.ts";
 import { useFetchDocument } from "@/composables/api/useFetchDocument.ts";
 import { useUpdateDocument } from "@/composables/api/useUpdateDocument.ts";
 
@@ -27,7 +27,7 @@ import cloudCheckIconUrl from "@/assets/icons/cloud-check.svg?url";
 const route = useRoute();
 const router = useRouter();
 
-const { editor } = useWrittableEditor({
+const { editor } = useWritableEditor({
     onBlur: () => {
         saveDocument();
     },

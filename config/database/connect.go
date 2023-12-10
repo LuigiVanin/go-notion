@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"main/models"
 
 	"gorm.io/driver/postgres"
@@ -18,7 +17,6 @@ func CreateConnection(url string) (*gorm.DB, error) {
 
 func Migrate() error {
 	err := Database.AutoMigrate(&models.User{}, &models.Document{})
-	fmt.Println("PRINTING DATABASE: ", err)
 	return err
 }
 

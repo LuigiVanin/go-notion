@@ -14,7 +14,7 @@ import Underline from "@tiptap/extension-underline";
 
 type EditorProps = Parameters<typeof useEditor>[0];
 
-export function useWrittableEditor(options?: Partial<EditorProps>) {
+export function useWritableEditor(options?: Partial<EditorProps>) {
     const editor = useEditor({
         extensions: [
             StarterKit,

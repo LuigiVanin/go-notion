@@ -2,7 +2,6 @@ package config
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 
 	"github.com/joho/godotenv"
@@ -26,7 +25,6 @@ func LoadEnvData() (EnvData, error) {
 
 	url := env["DATABASE_URL"]
 
-	fmt.Println("ENV HWT_KEY: ", env["JWT_KEY"])
 	jwtKey := env["JWT_KEY"]
 	salt, err := strconv.Atoi(env["SALT"])
 

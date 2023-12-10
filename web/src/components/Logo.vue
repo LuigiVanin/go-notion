@@ -1,5 +1,5 @@
 <template>
-    <span class="app-logo">Writabble</span>
+    <span class="app-logo">Writable</span>
 </template>
 
 <style lang="scss" scoped>
