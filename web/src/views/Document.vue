@@ -6,6 +6,9 @@ import { useRoute, useRouter } from "vue-router";
 // Libraries
 import { BubbleMenu, EditorContent } from "@tiptap/vue-3";
 
+// Helpers & Services
+import { DocumentSource, Html2PdfExporter } from "@/helpers/pdf/export.ts";
+
 // Composables
 import { useWritableEditor } from "@/composables/editor/useWritableEditor.ts";
 import { useFetchDocument } from "@/composables/api/useFetchDocument.ts";
@@ -37,6 +40,7 @@ const { updateDocument, updateLoading } = useUpdateDocument();
 
 const title = ref("");
 const status = ref<DocumentStatus>("draft");
+const isExporting = ref(false);
 
 provide("editor", {
     editor,
@@ -72,6 +76,29 @@ const saveDocument = async () => {
         text: editor.value?.getHTML() || "",
     });
 };
+
+const exportAsPsf = () => {
+    isExporting.value = true;
+    const pdfExporter = new Html2PdfExporter();
+    if (!editor.value) return;
+
+    const source: DocumentSource = {
+        title: title.value,
+        content: editor.value?.getHTML() || "",
+    };
+
+    pdfExporter.export(source, () => {
+        isExporting.value = false;
+    });
+};
+
+const handleExport = () => {
+    if (isExporting.value) {
+        return;
+    }
+
+    exportAsPsf();
+};
 </script>
 
 <template>
@@ -87,22 +114,22 @@ const saveDocument = async () => {
             </Button>
 
             <div class="editor-container__header">
-                <Button size="lg">Exportar para PDF</Button>
+                <Button :loading="isExporting" size="lg" @click="handleExport">
+                    Exportar para PDF
+                </Button>
                 <Button
                     :icon="cloudCheckIconUrl"
                     :loading="updateLoading"
+                    loading-text="Salvando..."
                     size="lg"
                     btn-type="no-border"
                     @click="saveDocument"
                 >
-                    <template v-if="!updateLoading">
-                        Salvamento automático
-                    </template>
-                    <template v-else> Salvando... </template>
+                    Salvamento automático
                 </Button>
             </div>
         </header>
-        <TextInput v-model="title" />
+        <TextInput v-model="title" @blur="saveDocument" />
         <div class="editor-container__actions">
             <EditorActions />
             <StatusSelect v-model="status" @select="saveDocument" />
@@ -153,12 +180,26 @@ const saveDocument = async () => {
                     stroke: $green_3;
                 }
             }
+
+            @media (max-width: $lg_mobile) {
+                & {
+                    display: none;
+                }
+            }
         }
     }
 
     .editor-container__actions {
         width: 100%;
         @include flex(row, start, space-between);
+        @media (max-width: $tablet) {
+            flex-wrap: wrap;
+            gap: $spacing_6;
+
+            :deep(> .input-main) {
+                margin-left: auto;
+            }
+        }
     }
 
     .editor-content__wrapper {
@@ -167,8 +208,16 @@ const saveDocument = async () => {
             100vh - $header_height - 38px - 40px - 40px - (3 * $spacing_13) -
                 (2 * $spacing_20)
         );
+        @media (max-width: $tablet) {
+            height: calc(
+                100vh - $header_height - 38px - 40px - 40px - (3 * $spacing_13) -
+                    (2 * $spacing_20) - 40px
+            );
+        }
         overflow-y: auto;
         overflow-x: visible;
+        border-inline: $spacing_0 solid $neutral_2;
+        @include set-scrollbar;
     }
 
     :deep(.input-main) {
@@ -199,6 +248,7 @@ const saveDocument = async () => {
     padding-block: $spacing_8;
     min-height: 500px;
     height: 100%;
+    outline: none;
 
     strong {
         font-weight: 700;
@@ -230,7 +280,8 @@ const saveDocument = async () => {
     }
 
     blockquote {
-        border-left: 4px solid $neutral_6;
+        border-left: 4px solid $neutral_7;
+        background: $neutral_3;
         padding-left: $spacing_8;
         padding-block: $spacing_2;
     }

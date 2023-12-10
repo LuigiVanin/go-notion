@@ -20,7 +20,7 @@ const props = defineProps<EditorButtonIconProps>();
 button {
     @include reset-button;
     @include flex-center;
-    width: 32px;
+    @include set-fixed-width(32px);
     height: 32px;
 
     border-radius: $border_r_mdx;

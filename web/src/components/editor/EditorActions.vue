@@ -41,6 +41,8 @@ const filteredActions = computed(() => {
 .editor-action {
     width: 100%;
     @include flex(row, start, start);
+    @include set-scrollbar(2px);
+    overflow-x: auto;
     gap: $spacing_5;
 }
 </style>

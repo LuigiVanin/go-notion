@@ -10,6 +10,7 @@ import loadingIconUrl from "@/assets/icons/loading.svg?url";
 
 type ButtonsProps = {
     text?: string;
+    loadingText?: string;
     btnType?: "soft" | "no-border" | "filled" | "outlined" | "simple";
     color?: "primary" | "blue" | "orange" | "red";
     size?: "sm" | "md" | "lg";
@@ -48,22 +49,26 @@ const handleClick = () => {
         @click="handleClick"
     >
         <span>
+            <span v-if="props.loading" class="button-main__loading">
+                <InlineSvg
+                    :src="loadingIconUrl"
+                    class="button-main__loading-icon"
+                />
+            </span>
             <InlineSvg
-                v-if="props.icon"
+                v-else-if="props.icon"
                 :src="props.icon"
                 class="button-main__icon"
             />
-            <slot>
+            <slot v-if="!loading || !props.loadingText">
                 {{ props.text }}
             </slot>
+            <span v-else>{{ props.loadingText }}</span>
             <InlineSvg
                 v-if="props.suffixIcon"
                 :src="props.suffixIcon"
                 class="button-main__icon"
             />
-        </span>
-        <span v-if="props.loading" class="button-main__loading">
-            <InlineSvg :src="loadingIconUrl" class="button-main__icon" />
         </span>
     </button>
 </template>
@@ -84,12 +89,18 @@ button.button-main {
         gap: $spacing_3;
     }
 
-    :deep(svg.button-main__icon) {
+    :deep(svg.button-main__icon),
+    :deep(svg.button-main__loading-icon) {
         path,
         rect,
         circle {
             stroke: currentColor;
         }
+    }
+
+    :deep(svg.button-main__loading-icon) {
+        width: $button_icon_small;
+        height: $button_icon_small;
     }
 
     &--active,
@@ -218,16 +229,7 @@ button.button-main {
     &--loading {
         position: relative;
 
-        > span:not(.button-main__loading) {
-            opacity: 0;
-        }
-
-        > span.button-main__loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-
+        span.button-main__loading {
             :deep(svg) {
                 animation: spin 1.5s linear infinite;
             }

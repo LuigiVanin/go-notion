@@ -18,7 +18,9 @@ export function useWritableEditor(options?: Partial<EditorProps>) {
     const editor = useEditor({
         extensions: [
             StarterKit,
-            Placeholder.configure({ placeholder: "Write something..." }),
+            Placeholder.configure({
+                placeholder: `Pressione "/" para ver ações...`,
+            }),
             TextAlign.configure({
                 types: ["heading", "paragraph"],
                 alignments: ["left", "center", "right"],

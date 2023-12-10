@@ -47,6 +47,8 @@ onMounted(async () => {
         padding-inline: $spacing_13;
         width: 100%;
         max-width: $header_content_width;
+        background: $neutral_2;
+        flex: 1;
     }
 }
 </style>

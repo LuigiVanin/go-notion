@@ -48,7 +48,6 @@ const deleteDocument = async (id: number) => {
     if (!error) {
         emit("delete-document", documentToDeleteId.value);
         documentToDeleteId.value = null;
-        console.log(id);
         return;
     }
 
@@ -162,6 +161,9 @@ const documentToDelete = computed(() => {
 .document-table {
     width: 100%;
     @include flex(column, start, start);
+    overflow-x: auto;
+
+    @include set-scrollbar;
 
     main {
         width: 100%;

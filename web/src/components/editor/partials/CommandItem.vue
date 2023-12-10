@@ -39,7 +39,7 @@ watch(
         @click="handleActionClick"
     >
         <div class="action__icon">
-            <InlineSvg :src="props.iconUrl" width="27" />
+            <InlineSvg :src="props.iconUrl" width="24" />
         </div>
         <span class="action__label">
             {{ props.label }}
@@ -49,7 +49,7 @@ watch(
 
 <style lang="scss" scoped>
 .action {
-    height: 50px;
+    height: 45px;
     @include flex(row, center, start);
     gap: $spacing_8;
     border-radius: $border_r_md;
@@ -62,7 +62,7 @@ watch(
     }
 
     &.action--selected {
-        background: $neutral_4;
+        background: $neutral_3;
 
         .action__icon {
             background: $neutral_2;
@@ -78,8 +78,8 @@ watch(
     }
 
     .action__icon {
-        height: 42px;
-        min-width: 40px;
+        height: 35px;
+        min-width: 35px;
         background: $neutral_4;
         border-radius: $border_r_md;
         @include flex-center;
@@ -92,7 +92,7 @@ watch(
 
     span.action__label {
         font-weight: 400;
-        font-size: $font_6;
+        font-size: $font_5;
         color: $neutral_9;
     }
 }

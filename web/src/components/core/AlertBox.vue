@@ -93,8 +93,7 @@ const boxIcon = computed(() => {
     border: 1px solid var(--alert-strong-color);
 
     :deep(svg) {
-        width: 25px;
-        height: 25px;
+        @include set-fixed-width(25px);
 
         path {
             stroke: var(--alert-strong-color);
@@ -102,7 +101,7 @@ const boxIcon = computed(() => {
     }
 
     :deep(svg.alert-box__close) {
-        width: 20px;
+        @include set-fixed-width(20px);
         height: 20px;
         margin-left: auto;
 

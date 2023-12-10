@@ -1,0 +1,17 @@
+@mixin set-scrollbar($size: 4px) {
+    &::-webkit-scrollbar {
+        height: $size;
+        width: $size;
+        background: $neutral_1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $neutral_5;
+    }
+}
+
+@mixin set-fixed-width($width) {
+    width: $width;
+    min-width: $width;
+    max-width: $width;
+}

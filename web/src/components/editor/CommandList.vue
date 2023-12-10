@@ -75,7 +75,7 @@ onKeyStroke("Enter", () => {
     ul {
         max-height: 200px;
         overflow-y: auto;
-        // @include flex-center(column);
+        @include set-scrollbar;
     }
 }
 </style>

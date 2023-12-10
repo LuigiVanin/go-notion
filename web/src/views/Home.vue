@@ -31,6 +31,14 @@ onMounted(async () => {
     }
 });
 
+const handleDeletedDocument = (documentId: number) => {
+    if (documents.value?.docs) {
+        documents.value.docs = documents.value?.docs.filter(
+            (document) => document.id !== documentId
+        );
+    }
+};
+
 const createDocument = async () => {
     documentLoading.value = true;
     const { data, error } = await api.document.create({
@@ -66,7 +74,11 @@ const createDocument = async () => {
             closable
         />
         <h3>Documentos:</h3>
-        <DocumentTable v-if="documents?.docs" :documents="documents.docs" />
+        <DocumentTable
+            v-if="documents?.docs"
+            :documents="documents.docs"
+            @delete-document="handleDeletedDocument"
+        />
     </div>
 </template>
 
@@ -74,7 +86,12 @@ const createDocument = async () => {
 .home {
     width: 100%;
     @include flex(column, start, start);
+    height: 100%;
     gap: $spacing_20;
+
+    :deep(.document-table) {
+        flex: 1;
+    }
 
     > h3 {
         padding-top: $spacing_6;
@@ -112,6 +129,13 @@ const createDocument = async () => {
             color: $neutral_8 !important;
             font-size: $font_4;
             font-weight: 400;
+        }
+
+        @media (max-width: 388px) {
+            span.home__title__divider,
+            p {
+                display: none;
+            }
         }
     }
 
